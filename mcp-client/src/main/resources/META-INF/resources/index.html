@@ -3,176 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Client</title>
+    <title>Claudio</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 2rem; }
-        .container { max-width: 1000px; margin: 0 auto; background: #313244; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.5); }
-        h1 { color: #89b4fa; text-align: center; margin-top: 0; }
+        :root {
+            --bg: #0f172a; --card: #1e293b; --accent: #8b5cf6;
+            --text: #f1f5f9; --user: #0ea5e9; --ai: #10b981; --tool: #f43f5e;
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
 
-        .top-panel { background: #181825; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #45475a;}
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        input[type="text"] { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #45475a; background: #11111b; color: white; font-size: 16px; outline: none; }
-        button { padding: 12px 24px; background: #89b4fa; color: #11111b; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #b4befe; }
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: var(--accent); font-size: 2rem; }
 
-        .server-badges { display: flex; gap: 10px; flex-wrap: wrap; }
-        .badge { background: #a6e3a1; color: #11111b; padding: 5px 12px; border-radius: 15px; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px;}
-        .badge.loading { background: #f9e2af; }
+        /* Paneles */
+        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
+        input:focus { border-color: var(--accent); }
+        button { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; background: var(--accent); color: white; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;}
-        .tool-card { background: #181825; border: 1px solid #45475a; border-radius: 8px; padding: 20px; display: flex; flex-direction: column;}
-        .tool-card .server-tag { font-size: 11px; background: #45475a; color: #cdd6f4; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 10px; word-break: break-all;}
-        .tool-card h3 { margin: 0 0 10px 0; color: #f38ba8; font-size: 18px;}
-        .tool-card p { font-size: 13px; color: #bac2de; margin-bottom: 15px; flex-grow: 1;}
+        /* Servidores */
+        .server-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #334155; border: 1px solid #475569; }
+        .badge.online { border-color: #10b981; color: #10b981; }
 
-        .tool-input-group { margin-bottom: 10px; }
-        .tool-input-group label { display: block; font-size: 12px; color: #89b4fa; margin-bottom: 4px;}
-        .tool-input-group input { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 4px; background: #313244; border: 1px solid #45475a; color: white;}
+        /* Chat */
+        #chat-window { height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-right: 10px; margin-bottom: 20px; scroll-behavior: smooth; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; line-height: 1.5; font-size: 15px; }
+        .msg.user { align-self: flex-end; background: var(--user); color: white; border-bottom-right-radius: 2px; }
+        .msg.ai { align-self: flex-start; background: #334155; border-bottom-left-radius: 2px; }
 
-        .execute-btn { background: #a6e3a1; width: 100%; margin-top: 10px; padding: 10px; font-size: 14px;}
-        .execute-btn:hover { background: #94e2d5; }
+        /* Tool Inspector */
+        .tool-call {
+            background: #1a1a1a; border-left: 3px solid var(--tool);
+            padding: 12px; border-radius: 6px; font-family: 'Fira Code', monospace;
+            font-size: 12px; margin: 10px 0; color: #e2e8f0;
+        }
+        .tool-header { color: var(--tool); font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;}
+        .json-block { color: #94a3b8; overflow-x: auto; white-space: pre-wrap; margin-top: 4px;}
 
-        .result-box { margin-top: 10px; background: #11111b; padding: 10px; border-radius: 4px; display: none; }
-        .result-box pre { margin: 0; white-space: pre-wrap; font-size: 12px; color: #a6e3a1; word-wrap: break-word;}
+        /* Scrollbar */
+        #chat-window::-webkit-scrollbar { width: 6px; }
+        #chat-window::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>MCP Client</h1>
-
-    <div class="top-panel">
-        <div class="input-group">
-            <input type="text" id="serverUrl" value="" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
-            <button onclick="addServer()">Añadir Servidor</button>
-        </div>
-        <div id="activeServers" class="server-badges">
-        </div>
+    <div class="header">
+        <h1>Claudio</h1>
+        <p style="color: #94a3b8">Quarkus</p>
     </div>
 
-    <h2 style="font-size: 18px; color: #bac2de; border-bottom: 1px solid #45475a; padding-bottom: 10px;">Catálogo de Herramientas</h2>
-    <div id="toolsContainer" class="tools-grid">
+    <div class="card">
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
+            <button onclick="connectServer()">Conectar</button>
+        </div>
+        <div id="serverList" class="server-list"></div>
+    </div>
+
+    <div class="card" style="padding: 25px;">
+        <div id="chat-window">
+            <div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>
+        </div>
+        <div class="input-group">
+            <input type="text" id="chatInput" placeholder="Pregunta algo..." onkeypress="if(event.key==='Enter') sendChat()">
+            <button onclick="sendChat()" style="background: #10b981;">Enviar</button>
+        </div>
     </div>
 </div>
 
 <script>
-    const connectedServers = new Set(); // Evita añadir el mismo servidor dos veces en UI
+    const servers = new Set();
 
-    async function addServer() {
-        const urlInput = document.getElementById('serverUrl').value.trim();
-        if (!urlInput) return;
-
-        // Mostrar el servidor como "Cargando..."
-        const badgeId = 'badge-' + btoa(urlInput).replace(/[^a-zA-Z0-9]/g, '');
-        if (!document.getElementById(badgeId)) {
-            document.getElementById('activeServers').innerHTML += `<div id="${badgeId}" class="badge loading">⏳ Conectando: ${urlInput}...</div>`;
-        }
+    async function connectServer() {
+        const url = document.getElementById('urlInput').value.trim();
+        if(!url) return;
 
         try {
-            const response = await fetch('/api/mcp/connect', {
+            const res = await fetch('/api/mcp/connect', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: urlInput })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({url})
             });
+            const data = await res.json();
+            if(data.error) throw new Error(data.error);
 
-            const data = await response.json();
-            let parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-
-            if (parsedData.error) throw new Error(parsedData.error);
-
-            // Si la conexión es exitosa, marcamos el servidor en verde
-            document.getElementById(badgeId).className = "badge";
-            document.getElementById(badgeId).innerHTML = `🟢 Conectado: ${urlInput}`;
-            connectedServers.add(urlInput);
-
-            if (parsedData.result && parsedData.result.tools) {
-                renderTools(parsedData.result.tools, urlInput);
-            }
-
-            // Limpiamos el input para que puedas añadir otro
-            document.getElementById('serverUrl').value = '';
-
-        } catch (error) {
-            document.getElementById(badgeId).className = "badge";
-            document.getElementById(badgeId).style.background = "#f38ba8";
-            document.getElementById(badgeId).innerHTML = `🔴 Error: ${urlInput}`;
-            alert("Fallo al conectar a " + urlInput + ":\n" + error.message);
-        }
+            servers.add(url);
+            renderServers();
+            document.getElementById('urlInput').value = '';
+        } catch(e) { alert("Error: " + e.message); }
     }
 
-    function renderTools(tools, serverUrl) {
-        const container = document.getElementById('toolsContainer');
+    function renderServers() {
+        const container = document.getElementById('serverList');
+        container.innerHTML = Array.from(servers).map(s => `<span class="badge online">● ${s}</span>`).join('');
+    }
 
-        tools.forEach(tool => {
-            const cardId = `tool-${serverUrl}-${tool.name}`.replace(/[^a-zA-Z0-9-]/g, '');
-            // Si la herramienta ya existe en el panel, la borramos para redibujarla actualizada
-            if(document.getElementById(cardId)) document.getElementById(cardId).remove();
+    async function sendChat() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if(!text || servers.size === 0) return;
 
-            const card = document.createElement('div');
-            card.className = 'tool-card';
-            card.id = cardId;
+        appendMessage('user', text);
+        input.value = '';
 
-            let inputsHtml = '';
-            if (tool.inputSchema && tool.inputSchema.properties) {
-                for (const [propName, propDetails] of Object.entries(tool.inputSchema.properties)) {
-                    inputsHtml += `
-                            <div class="tool-input-group">
-                                <label>${propName} (${propDetails.type})</label>
-                                <input type="text" data-arg-name="${propName}" placeholder="${propDetails.description || ''}">
-                            </div>
-                        `;
-                }
+        const loading = appendMessage('ai', 'Pensando...');
+
+        try {
+            const res = await fetch('/api/mcp/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: text})
+            });
+            const data = await res.json();
+
+            loading.remove();
+
+            if(data.error) {
+                appendMessage('ai', '❌ Error: ' + data.error);
+                return;
             }
 
-            card.innerHTML = `
-                    <div class="server-tag">Servidor: ${serverUrl}</div>
-                    <h3>⚙️ ${tool.name}</h3>
-                    <p>${tool.description || 'Sin descripción disponible'}</p>
-                    <div class="inputs-container">${inputsHtml}</div>
-                    <button class="execute-btn" onclick="executeTool(this, '${tool.name}', '${serverUrl}')">Ejecutar</button>
-                    <div class="result-box">
-                        <pre></pre>
+            // Renderizado inteligente
+            let html = `<div>${data.reply}</div>`;
+
+            if(data.toolInfo) {
+                html += `
+                    <div class="tool-call">
+                        <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
+                        <div class="json-block"><b>Input:</b> ${JSON.stringify(data.toolInfo.arguments)}</div>
+                        <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(data.toolInfo.rawResult)}</div>
                     </div>
                 `;
-            container.appendChild(card);
-        });
+            }
+
+            appendMessage('ai', html, true);
+
+        } catch(e) {
+            loading.remove();
+            appendMessage('ai', 'Error de conexión.');
+        }
     }
 
-    async function executeTool(btnElement, toolName, serverUrl) {
-        const card = btnElement.closest('.tool-card');
-        const resultBox = card.querySelector('.result-box');
-        const preArea = card.querySelector('pre');
-
-        const args = {};
-        card.querySelectorAll('input[data-arg-name]').forEach(input => {
-            if(input.value) args[input.dataset.argName] = input.value;
-        });
-
-        btnElement.textContent = "Ejecutando... ⏳";
-        resultBox.style.display = "block";
-        preArea.style.color = "#f9e2af";
-        preArea.textContent = "Enviando por el túnel activo...";
-
-        try {
-            const response = await fetch('/api/mcp/execute', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: serverUrl, toolName: toolName, arguments: args })
-            });
-
-            const data = await response.json();
-            let parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-
-            if (parsedData.error) throw new Error(parsedData.error);
-
-            preArea.style.color = "#a6e3a1";
-            preArea.textContent = JSON.stringify(parsedData.result || parsedData, null, 2);
-        } catch (error) {
-            preArea.style.color = "#f38ba8";
-            preArea.textContent = "Error: " + error.message;
-        } finally {
-            btnElement.textContent = "Ejecutar";
-        }
+    function appendMessage(role, content, isHtml = false) {
+        const win = document.getElementById('chat-window');
+        const div = document.createElement('div');
+        div.className = `msg ${role}`;
+        if(isHtml) div.innerHTML = content;
+        else div.textContent = content;
+        win.appendChild(div);
+        win.scrollTop = win.scrollHeight;
+        return div;
     }
 </script>
 </body>
