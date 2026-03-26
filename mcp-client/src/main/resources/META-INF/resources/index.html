@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claudio</title>
+    <title>Claudio - Nexus MCP</title>
     <style>
         :root {
             --bg: #0f172a; --card: #1e293b; --accent: #8b5cf6;
@@ -54,7 +54,7 @@
 <div class="container">
     <div class="header">
         <h1>Claudio</h1>
-        <p style="color: #94a3b8">Quarkus</p>
+        <p style="color: #94a3b8">Quarkus Agente MCP</p>
     </div>
 
     <div class="card">
@@ -67,7 +67,7 @@
 
     <div class="card" style="padding: 25px;">
         <div id="chat-window">
-            <div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>
+            <div class="msg ai">¡Hola! Conecta tus servidores MCP arriba y pregúntame lo que necesites. Soy capaz de encadenar herramientas automáticamente.</div>
         </div>
         <div class="input-group">
             <input type="text" id="chatInput" placeholder="Pregunta algo..." onkeypress="if(event.key==='Enter') sendChat()">
@@ -111,7 +111,7 @@
         appendMessage('user', text);
         input.value = '';
 
-        const loading = appendMessage('ai', 'Pensando...');
+        const loading = appendMessage('ai', 'Pensando y buscando datos...');
 
         try {
             const res = await fetch('/api/mcp/chat', {
@@ -131,14 +131,17 @@
             // Renderizado inteligente
             let html = `<div>${data.reply}</div>`;
 
-            if(data.toolInfo) {
-                html += `
-                    <div class="tool-call">
-                        <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
-                        <div class="json-block"><b>Input:</b> ${JSON.stringify(data.toolInfo.arguments)}</div>
-                        <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(data.toolInfo.rawResult)}</div>
-                    </div>
-                `;
+            // Verificamos si hay un array de herramientas ejecutadas
+            if(data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
+                data.toolInfo.forEach(tool => {
+                    html += `
+                        <div class="tool-call">
+                            <div class="tool-header">🔧 TOOL_EXECUTION: ${tool.name}</div>
+                            <div class="json-block"><b>Input:</b> ${JSON.stringify(tool.arguments)}</div>
+                            <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(tool.rawResult)}</div>
+                        </div>
+                    `;
+                });
             }
 
             appendMessage('ai', html, true);
