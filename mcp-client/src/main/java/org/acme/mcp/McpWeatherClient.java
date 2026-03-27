@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response;
 public interface McpWeatherClient {
 
     @GET
-    @Path("/mcp/sse")
+    @Path("")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     Multi<SseEvent<String>> connectToSse();
 

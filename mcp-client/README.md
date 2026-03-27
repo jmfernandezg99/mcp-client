@@ -1,73 +1,66 @@
-# mcp-client
+# 🤖 Documentación Técnica: Claudio (Orquestador MCP)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## 📌 Resumen del Proyecto
+**Claudio** es un Orquestador de Inteligencia Artificial (Agente Autónomo) construido sobre **Quarkus**. Su principal característica es la implementación del protocolo **MCP (Model Context Protocol)**, lo que le permite conectarse dinámicamente a servidores externos, descubrir sus herramientas (Tools) en tiempo real, y utilizarlas mediante la IA para resolver consultas complejas de los usuarios.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+El "cerebro" cognitivo está impulsado por **Google Gemini 2.5 Flash** a través de la librería **LangChain4j**.
 
-## Running the application in dev mode
+## 🏗️ Arquitectura del Sistema
 
-You can run your application in dev mode that enables live coding using:
+El sistema sigue una arquitectura de cliente-servidor reactiva orientada a eventos, dividida en 3 capas principales:
 
-```shell script
-./mvnw quarkus:dev
-```
+1. **Frontend (Interfaz de Usuario):** Una SPA (Single Page Application) en HTML/JS puro que permite al usuario gestionar las conexiones a los servidores MCP y chatear con el Agente.
+2. **Backend (Orquestador Quarkus - Puerto 8081):** El núcleo del proyecto. Mantiene el estado de las sesiones, gestiona el bucle de razonamiento de la IA y enruta las peticiones de herramientas.
+3. **Servidores MCP (Nodos Externos):** Microservicios independientes (ej. Python en puerto 8080, Quarkus en puerto 8082) que exponen capacidades mediante Server-Sent Events (SSE) y JSON-RPC.
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## ⚙️ Componentes Principales (Código Base)
 
-## Packaging and running the application
+### 1. `McpController.java` (El Cerebro)
+Controlador REST que actúa como puente entre la interfaz de usuario, los servidores MCP y el modelo de lenguaje de Google Gemini.
+* **Gestión de Sesiones (`activeSessions`):** Utiliza un `ConcurrentHashMap` para mantener vivas las conexiones con múltiples servidores simultáneamente.
+* **Bucle Agéntico (Agentic Loop):** Implementa un bucle de razonamiento de hasta 5 iteraciones. La IA puede decidir encadenar múltiples herramientas de diferentes servidores antes de emitir una respuesta final al usuario, manteniendo una "mochila" de contexto (memoria temporal).
+* **Resolución Universal de URIs:** Capaz de conectarse a cualquier servidor interpretando rutas relativas o absolutas mediante `URI.resolve()`, evitando problemas de "Caché Envenenada".
 
-The application can be packaged using:
+### 2. `McpWeatherClient.java` (El Cliente Universal)
+Interfaz reactiva basada en `@RegisterRestClient` de Quarkus.
+* Agnóstica a las rutas: Utiliza `@Path("")` para adaptarse a cualquier endpoint configurado dinámicamente.
+* Abre un canal unidireccional permanente vía `SERVER_SENT_EVENTS` (SSE) para recibir eventos del servidor.
+* Utiliza peticiones `POST` síncronas para enviar comandos `JSON-RPC` (como `initialize`, `tools/list` y `tools/call`).
 
-```shell script
-./mvnw package
-```
+## 🔄 Flujo de Comunicación (El Protocolo MCP)
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+Cuando el usuario añade una nueva URL en el dashboard (ej. `http://localhost:8082/mcp/sse`), ocurre la siguiente magia por debajo:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+1. **Handshake (GET):** Claudio abre la conexión SSE con la URL indicada.
+2. **Enrutamiento (Evento `endpoint`):** El servidor responde indicando en qué URI secreta o dinámica espera recibir los POSTs (ej. `/mcp/message?sessionId=123`).
+3. **Inicialización (POST `initialize`):** Claudio se presenta y negocia la versión del protocolo (`2024-11-05`).
+4. **Descubrimiento (POST `tools/list`):** Claudio pide la lista de herramientas disponibles y las almacena en la caché de la sesión.
 
-If you want to build an _über-jar_, execute the following command:
+## 🧠 El Bucle de Razonamiento (Agentic Workflow)
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+Cuando el usuario hace una pregunta, Claudio no actúa como un simple pasador de mensajes. Sigue un patrón de **Agente ReAct (Reasoning and Acting)**:
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+1. **Evaluación:** Se inyecta la pregunta del usuario y el esquema JSON de TODAS las herramientas descubiertas en el *System Prompt* de Gemini.
+2. **Decisión:** Si Gemini necesita datos, responde con una estructura JSON pidiendo ejecutar una acción (`{"action": "tool", "toolName": "buscar_nota"...}`).
+3. **Ejecución:** El backend captura esta intención, enruta la petición al servidor MCP dueño de esa herramienta, y obtiene el resultado (`"Gandia"`).
+4. **Iteración:** Se añade el resultado al historial de la conversación oculta y se le vuelve a preguntar a Gemini: *"Aquí tienes el dato, ¿qué hacemos ahora?"*.
+5. **Resolución:** Si Gemini determina que necesita usar otra herramienta (ej. el clima de Gandia), repite el ciclo. Si ya tiene todo, envía la respuesta final en lenguaje natural (`{"action": "reply", "message": "..."}`).
 
-## Creating a native executable
+## 🚀 Despliegue y Configuración
 
-You can create a native executable using:
+### Prerrequisitos
+* Java 17+
+* Maven
+* Una API Key de Google Gemini Studio.
 
-```shell script
-./mvnw package -Dnative
-```
+### Variables de Entorno (`application.properties`)
+Debe configurarse la clave de la IA para que el orquestador pueda pensar:
+```properties
+gemini.api.key=AIzaSyTuClaveDeGoogleAqui...
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+Ejecución en Modo Desarrollo
+Para arrancar el orquestador con Live Reload:
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/mcp-client-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST Client ([guide](https://quarkus.io/guides/rest-client)): Call REST services
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-
-## Provided Code
-
-### REST Client
-
-Invoke different services through REST with JSON
-
-[Related guide section...](https://quarkus.io/guides/rest-client)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Bash
+./mvnw clean quarkus:dev
+El panel de control (Dashboard) estará disponible en: http://localhost:8081

@@ -32,7 +32,7 @@ public class McpController {
                     .modelName("gemini-2.5-flash")
                     .temperature(0.0)
                     .build();
-            System.out.println("✅ Cerebro Gemini 2.5 Flash activado (Modo Agente).");
+            System.out.println("✅ Cerebro Gemini 2.5 Flash activado (Modo Agente Universal).");
         } catch (Exception e) {
             System.err.println("❌ Error IA: " + e.getMessage());
         }
@@ -54,10 +54,21 @@ public class McpController {
     @Produces(MediaType.APPLICATION_JSON)
     public Object connectToServer(Map<String, Object> payload) {
         String targetUrl = (String) payload.get("url");
-        if (activeSessions.containsKey(targetUrl)) return Map.of("tools", activeSessions.get(targetUrl).cachedTools);
+
+        // 1. Prevención de Caché Envenenada
+        if (activeSessions.containsKey(targetUrl)) {
+            if (activeSessions.get(targetUrl).cachedTools.isEmpty()) {
+                activeSessions.remove(targetUrl); // Limpiamos la sesión mala y reintentamos
+            } else {
+                return Map.of("tools", activeSessions.get(targetUrl).cachedTools); // Sesión buena, la devolvemos
+            }
+        }
 
         try {
-            McpWeatherClient sseClient = QuarkusRestClientBuilder.newBuilder().baseUri(URI.create(targetUrl)).build(McpWeatherClient.class);
+            McpWeatherClient sseClient = QuarkusRestClientBuilder.newBuilder()
+                    .baseUri(URI.create(targetUrl))
+                    .build(McpWeatherClient.class);
+
             ActiveSession newSession = new ActiveSession();
             AtomicReference<String> sessionUrl = new AtomicReference<>();
             CountDownLatch endpointLatch = new CountDownLatch(1);
@@ -72,17 +83,37 @@ public class McpController {
                 }
             }, f -> {});
 
-            if (!endpointLatch.await(5, TimeUnit.SECONDS)) return Map.of("error", "Timeout SSE.");
+            if (!endpointLatch.await(5, TimeUnit.SECONDS)) {
+                return Map.of("error", "Timeout SSE al intentar conectar con " + targetUrl);
+            }
 
-            newSession.messageClient = QuarkusRestClientBuilder.newBuilder().baseUri(new URI(targetUrl + sessionUrl.get())).build(McpWeatherClient.class);
+            // 2. SOLUCIÓN DE RUTAS UNIVERSALES: Usamos URI.resolve()
+            URI baseUri = new URI(targetUrl);
+            URI messageUri = baseUri.resolve(sessionUrl.get());
+
+            newSession.messageClient = QuarkusRestClientBuilder.newBuilder()
+                    .baseUri(messageUri)
+                    .build(McpWeatherClient.class);
+
             activeSessions.put(targetUrl, newSession);
 
             newSession.messageLatch.set(new CountDownLatch(1));
-            newSession.messageClient.sendMessage(new JsonRpcRequest(1, "initialize", Map.of("protocolVersion", "2024-11-05", "capabilities", Map.of(), "clientInfo", Map.of("name", "QuarkusClient", "version", "1.0"))));
+            newSession.messageClient.sendMessage(new JsonRpcRequest(1, "initialize",
+                    Map.of("protocolVersion", "2024-11-05", "capabilities", Map.of(), "clientInfo", Map.of("name", "QuarkusClient", "version", "1.0"))));
             newSession.messageLatch.get().await(5, TimeUnit.SECONDS);
 
-            return askForTools(targetUrl);
-        } catch (Exception e) { return Map.of("error", e.getMessage()); }
+            Object toolsResponse = askForTools(targetUrl);
+
+            // Si fallamos pidiendo herramientas, no nos guardamos la sesión rota
+            if (toolsResponse instanceof Map && ((Map) toolsResponse).containsKey("error")) {
+                activeSessions.remove(targetUrl);
+            }
+            return toolsResponse;
+
+        } catch (Exception e) {
+            activeSessions.remove(targetUrl);
+            return Map.of("error", "Error de conexión: " + e.getMessage());
+        }
     }
 
     private Object askForTools(String targetUrl) {
@@ -94,13 +125,19 @@ public class McpController {
             session.messageLatch.get().await(5, TimeUnit.SECONDS);
 
             String raw = session.lastMessage.get();
+            if (raw == null) {
+                return Map.of("error", "No se recibieron herramientas del servidor");
+            }
+
             Map<String, Object> fullRes = mapper.readValue(raw, Map.class);
             Map<String, Object> result = (Map<String, Object>) fullRes.get("result");
             if (result != null && result.containsKey("tools")) {
                 session.cachedTools = (List<Map<String, Object>>) result.get("tools");
             }
             return raw;
-        } catch (Exception e) { return Map.of("error", e.getMessage()); }
+        } catch (Exception e) {
+            return Map.of("error", "Error pidiendo herramientas: " + e.getMessage());
+        }
     }
 
     @POST
@@ -144,11 +181,11 @@ public class McpController {
 
             String toolsJson = mapper.writeValueAsString(allTools);
 
-            // LA MAGIA: Memoria acumulativa para el bucle
+            // Memoria acumulativa para el bucle
             String conversationHistory = "Usuario: " + userMessage;
             List<Map<String, Object>> executedTools = new ArrayList<>();
 
-            int maxSteps = 5; // Límite de seguridad para que no se quede pensando eternamente
+            int maxSteps = 5;
 
             for (int step = 0; step < maxSteps; step++) {
                 String prompt = "Eres un orquestador IA avanzado. " +
@@ -160,7 +197,6 @@ public class McpController {
 
                 String aiResponse = chatModel.generate(prompt);
 
-                // Limpiamos el JSON por si Gemini le pone formato Markdown
                 if (aiResponse.contains("{")) {
                     aiResponse = aiResponse.substring(aiResponse.indexOf("{"), aiResponse.lastIndexOf("}") + 1);
                 }
@@ -171,10 +207,8 @@ public class McpController {
                     String name = (String) decision.get("toolName");
                     Map<String, Object> args = (Map<String, Object>) decision.get("arguments");
 
-                    // Ejecutamos la herramienta en el servidor correspondiente
                     Object toolRes = executeTool(Map.of("url", toolMap.get(name), "toolName", name, "arguments", args));
 
-                    // ¡Añadimos el resultado a la mochila de la IA y el bucle continúa!
                     conversationHistory += "\nSistema: Resultado de usar la herramienta '" + name + "' = " + mapper.writeValueAsString(toolRes);
 
                     executedTools.add(Map.of(
@@ -183,7 +217,6 @@ public class McpController {
                             "rawResult", toolRes
                     ));
                 } else {
-                    // La IA ha decidido que ya tiene todo para responder
                     return Map.of(
                             "reply", (String) decision.get("message"),
                             "toolInfo", executedTools
