@@ -24,33 +24,16 @@ import java.util.concurrent.atomic.AtomicReference;
 @Path("/api/mcp")
 public class McpController {
 
-    @ConfigProperty(name = "gemini.api.key", defaultValue = "")
-    String apiKey;
-
     @Inject
     JsonWebToken jwt;
 
     @Inject
     UserModelCache cache;
 
-    // Static model for fallback/test if needed, though we will mainly use cache.
-    private ChatLanguageModel chatModel;
+    // Static model removed because we use per-user cache now.
+    // private ChatLanguageModel chatModel;
 
-    @PostConstruct
-    void initIA() {
-        if (apiKey != null && !apiKey.isEmpty() && !apiKey.equals("apikey")) {
-            try {
-                this.chatModel = GoogleAiGeminiChatModel.builder()
-                        .apiKey(this.apiKey.trim())
-                        .modelName("gemini-2.0-flash")
-                        .temperature(0.0)
-                        .build();
-                System.out.println("✅ Cerebro Gemini 2.0 Flash activado (Global).");
-            } catch (Exception e) {
-                System.err.println("❌ Error IA: " + e.getMessage());
-            }
-        }
-    }
+    // initIA() removed since each request uses its own model from cache.
 
     private static final Map<String, ActiveSession> activeSessions = new ConcurrentHashMap<>();
 
@@ -78,15 +61,21 @@ public class McpController {
 
             sseClient.connectToSse().subscribe().with(event -> {
                 if ("endpoint".equals(event.name())) {
+                    System.out.println("✅ SSE Endpoint recibido: " + event.data());
                     sessionUrl.set(event.data());
                     endpointLatch.countDown();
                 } else if ("message".equals(event.name())) {
                     newSession.lastMessage.set(event.data());
                     newSession.messageLatch.get().countDown();
                 }
-            }, f -> {});
+            }, f -> {
+                System.err.println("❌ Error en suscripción SSE: " + f.getMessage());
+            });
 
-            if (!endpointLatch.await(5, TimeUnit.SECONDS)) return Map.of("error", "Timeout SSE.");
+            if (!endpointLatch.await(10, TimeUnit.SECONDS)) {
+                System.err.println("❌ Timeout esperando endpoint SSE para: " + targetUrl);
+                return Map.of("error", "Timeout SSE. Verifica que la URL sea accesible desde el contenedor (usa host.docker.internal si el servidor está fuera de Docker).");
+            }
 
             newSession.messageClient = QuarkusRestClientBuilder.newBuilder().baseUri(new URI(targetUrl + sessionUrl.get())).build(McpWeatherClient.class);
             activeSessions.put(targetUrl, newSession);

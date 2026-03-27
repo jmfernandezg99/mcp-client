@@ -18,7 +18,7 @@ public class EncryptionService {
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128; // in bits
 
-    @ConfigProperty(name = "app.master.key")
+    @ConfigProperty(name = "app.master.key", defaultValue = "0123456789abcdef0123456789abcdef")
     String masterKey;
 
     private SecretKey getSecretKey() {

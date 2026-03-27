@@ -295,31 +295,17 @@
 
 <body>
 
-<<<<<<< HEAD
     <div class="container">
         <div class="header">
             <h1>Claudio</h1>
-            <p style="color: #94a3b8">Quarkus</p>
+            <p style="color: #94a3b8">Quarkus Agente MCP</p>
             <div id="userInfo" class="user-info hidden">
                 <span id="usernameDisplay">User</span>
                 <button class="btn-settings" onclick="openSettings()">⚙️ API Key</button>
                 <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
             </div>
-=======
-<div class="container">
-    <div class="header">
-        <h1>Claudio</h1>
-        <p style="color: #94a3b8">Quarkus Agente MCP</p>
-    </div>
-
-    <div class="card">
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
-            <button onclick="connectServer()">Conectar</button>
->>>>>>> origin/claudio
         </div>
 
-<<<<<<< HEAD
         <!-- VISTA AUTH -->
         <div id="authView" class="card" style="max-width: 400px; margin: 0 auto;">
             <div class="tabs">
@@ -343,18 +329,13 @@
                 </div>
                 <button type="submit" style="width: 100%; margin-top: 10px;" id="authBtn">Ingresar</button>
             </form>
-=======
-    <div class="card" style="padding: 25px;">
-        <div id="chat-window">
-            <div class="msg ai">¡Hola! Conecta tus servidores MCP arriba y pregúntame lo que necesites. Soy capaz de encadenar herramientas automáticamente.</div>
->>>>>>> origin/claudio
         </div>
 
         <!-- VISTA MAIN APP -->
         <div id="mainView" class="hidden">
             <div class="card">
                 <div class="input-group">
-                    <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
+                    <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8081)">
                     <button onclick="connectServer()">Conectar</button>
                 </div>
                 <div id="serverList" class="server-list"></div>
@@ -464,7 +445,6 @@
             const endpoint = currentAuthMode === 'login' ? '/api/auth/login' : '/api/auth/register';
             const payload = currentAuthMode === 'login' ? { username, password } : { username, password, geminiKey };
 
-<<<<<<< HEAD
             try {
                 const res = await fetch(endpoint, {
                     method: 'POST',
@@ -472,9 +452,6 @@
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
-=======
-        const loading = appendMessage('ai', 'Pensando y buscando datos...');
->>>>>>> origin/claudio
 
                 if (!res.ok || data.error) {
                     errorEl.textContent = data.error || 'Error en la petición';
@@ -540,7 +517,6 @@
             }
         }
 
-<<<<<<< HEAD
         // ================= Chat y MCP =================
         async function authFetch(url, options = {}) {
             options.headers = options.headers || {};
@@ -605,7 +581,19 @@
                 // Renderizado inteligente
                 let html = `<div>${data.reply}</div>`;
 
-                if (data.toolInfo) {
+                // Verificamos si hay un array de herramientas ejecutadas
+                if (data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
+                    data.toolInfo.forEach(tool => {
+                        html += `
+                        <div class="tool-call">
+                            <div class="tool-header">🔧 TOOL_EXECUTION: ${tool.name}</div>
+                            <div class="json-block"><b>Input:</b> ${JSON.stringify(tool.arguments)}</div>
+                            <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(tool.rawResult)}</div>
+                        </div>
+                    `;
+                    });
+                } else if (data.toolInfo) {
+                    // Caso legacy: un solo tool
                     html += `
                     <div class="tool-call">
                         <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
@@ -620,19 +608,6 @@
             } catch (e) {
                 loading.remove();
                 appendMessage('ai', 'Error: ' + e.message);
-=======
-            // Verificamos si hay un array de herramientas ejecutadas
-            if(data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
-                data.toolInfo.forEach(tool => {
-                    html += `
-                        <div class="tool-call">
-                            <div class="tool-header">🔧 TOOL_EXECUTION: ${tool.name}</div>
-                            <div class="json-block"><b>Input:</b> ${JSON.stringify(tool.arguments)}</div>
-                            <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(tool.rawResult)}</div>
-                        </div>
-                    `;
-                });
->>>>>>> origin/claudio
             }
         }
 
