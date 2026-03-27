@@ -1,56 +1,311 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claudio</title>
     <style>
         :root {
-            --bg: #0f172a; --card: #1e293b; --accent: #8b5cf6;
-            --text: #f1f5f9; --user: #0ea5e9; --ai: #10b981; --tool: #f43f5e;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #8b5cf6;
+            --text: #f1f5f9;
+            --user: #0ea5e9;
+            --ai: #10b981;
+            --tool: #f43f5e;
+            --danger: #ef4444;
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
         /* Header */
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: var(--accent); font-size: 2rem; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        .user-info {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-settings {
+            background: transparent;
+            border: 1px solid #94a3b8;
+            color: #94a3b8;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-settings:hover {
+            background: #94a3b8;
+            color: white;
+        }
 
         /* Paneles */
-        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); margin-bottom: 20px; }
-        .input-group { display: flex; gap: 10px; }
-        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
-        input:focus { border-color: var(--accent); }
-        button { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; background: var(--accent); color: white; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--accent);
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
         /* Servidores */
-        .server-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #334155; border: 1px solid #475569; }
-        .badge.online { border-color: #10b981; color: #10b981; }
+        .server-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #334155;
+            border: 1px solid #475569;
+        }
+
+        .badge.online {
+            border-color: #10b981;
+            color: #10b981;
+        }
 
         /* Chat */
-        #chat-window { height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-right: 10px; margin-bottom: 20px; scroll-behavior: smooth; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; line-height: 1.5; font-size: 15px; }
-        .msg.user { align-self: flex-end; background: var(--user); color: white; border-bottom-right-radius: 2px; }
-        .msg.ai { align-self: flex-start; background: #334155; border-bottom-left-radius: 2px; }
+        #chat-window {
+            height: 450px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-right: 10px;
+            margin-bottom: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: var(--user);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg.ai {
+            align-self: flex-start;
+            background: #334155;
+            border-bottom-left-radius: 2px;
+        }
 
         /* Tool Inspector */
         .tool-call {
-            background: #1a1a1a; border-left: 3px solid var(--tool);
-            padding: 12px; border-radius: 6px; font-family: 'Fira Code', monospace;
-            font-size: 12px; margin: 10px 0; color: #e2e8f0;
+            background: #1a1a1a;
+            border-left: 3px solid var(--tool);
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            color: #e2e8f0;
         }
-        .tool-header { color: var(--tool); font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;}
-        .json-block { color: #94a3b8; overflow-x: auto; white-space: pre-wrap; margin-top: 4px;}
+
+        .tool-header {
+            color: var(--tool);
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .json-block {
+            color: #94a3b8;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin-top: 4px;
+        }
 
         /* Scrollbar */
-        #chat-window::-webkit-scrollbar { width: 6px; }
-        #chat-window::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        #chat-window::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-window::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        /* Modals and Overlays */
+        .hidden {
+            display: none !important;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #94a3b8;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .success-msg {
+            color: var(--ai);
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: white;
+        }
     </style>
 </head>
+
 <body>
 
+<<<<<<< HEAD
+    <div class="container">
+        <div class="header">
+            <h1>Claudio</h1>
+            <p style="color: #94a3b8">Quarkus</p>
+            <div id="userInfo" class="user-info hidden">
+                <span id="usernameDisplay">User</span>
+                <button class="btn-settings" onclick="openSettings()">⚙️ API Key</button>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </div>
+=======
 <div class="container">
     <div class="header">
         <h1>Claudio</h1>
@@ -61,76 +316,311 @@
         <div class="input-group">
             <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
             <button onclick="connectServer()">Conectar</button>
+>>>>>>> origin/claudio
         </div>
-        <div id="serverList" class="server-list"></div>
-    </div>
 
+<<<<<<< HEAD
+        <!-- VISTA AUTH -->
+        <div id="authView" class="card" style="max-width: 400px; margin: 0 auto;">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')" id="tab-login">Login</div>
+                <div class="tab" onclick="switchTab('register')" id="tab-register">Registro</div>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div class="error-msg hidden" id="authError"></div>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="authUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="authPassword" required>
+                </div>
+                <div class="form-group hidden" id="geminiGroup">
+                    <label>Gemini API Key</label>
+                    <input type="password" id="authGeminiKey">
+                </div>
+                <button type="submit" style="width: 100%; margin-top: 10px;" id="authBtn">Ingresar</button>
+            </form>
+=======
     <div class="card" style="padding: 25px;">
         <div id="chat-window">
             <div class="msg ai">¡Hola! Conecta tus servidores MCP arriba y pregúntame lo que necesites. Soy capaz de encadenar herramientas automáticamente.</div>
+>>>>>>> origin/claudio
         </div>
-        <div class="input-group">
-            <input type="text" id="chatInput" placeholder="Pregunta algo..." onkeypress="if(event.key==='Enter') sendChat()">
-            <button onclick="sendChat()" style="background: #10b981;">Enviar</button>
+
+        <!-- VISTA MAIN APP -->
+        <div id="mainView" class="hidden">
+            <div class="card">
+                <div class="input-group">
+                    <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8080)">
+                    <button onclick="connectServer()">Conectar</button>
+                </div>
+                <div id="serverList" class="server-list"></div>
+            </div>
+
+            <div class="card" style="padding: 25px;">
+                <div id="chat-window">
+                    <div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="chatInput" placeholder="Pregunta algo..."
+                        onkeypress="if(event.key==='Enter') sendChat()">
+                    <button onclick="sendChat()" style="background: #10b981;">Enviar</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    const servers = new Set();
+    <!-- MODAL SETTINGS -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Cambiar Gemini API Key</h2>
+            <div class="error-msg hidden" id="settingsError"></div>
+            <div class="success-msg hidden" id="settingsSuccess"></div>
+            <div class="form-group">
+                <label>Nueva API Key</label>
+                <input type="password" id="newGeminiKey">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="updateApiKey()" style="flex: 1;">Actualizar</button>
+                <button onclick="closeSettings()" style="flex: 1; background: #334155;">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-    async function connectServer() {
-        const url = document.getElementById('urlInput').value.trim();
-        if(!url) return;
+    <script>
+        let currentAuthMode = 'login';
+        const servers = new Set();
 
-        try {
-            const res = await fetch('/api/mcp/connect', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({url})
-            });
-            const data = await res.json();
-            if(data.error) throw new Error(data.error);
+        // ================= JWT y AUTH Logic =================
+        function getJwt() {
+            return localStorage.getItem('jwt');
+        }
+        function setJwt(token) {
+            localStorage.setItem('jwt', token);
+        }
 
-            servers.add(url);
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function checkAuth() {
+            const token = getJwt();
+            if (token) {
+                const payload = parseJwt(token);
+                if (payload && payload.exp * 1000 > Date.now()) {
+                    document.getElementById('authView').classList.add('hidden');
+                    document.getElementById('mainView').classList.remove('hidden');
+                    document.getElementById('userInfo').classList.remove('hidden');
+                    document.getElementById('usernameDisplay').textContent = payload.username || 'Usuario';
+                    return true;
+                }
+            }
+            logout();
+            return false;
+        }
+
+        function logout() {
+            localStorage.removeItem('jwt');
+            document.getElementById('authView').classList.remove('hidden');
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            servers.clear();
             renderServers();
-            document.getElementById('urlInput').value = '';
-        } catch(e) { alert("Error: " + e.message); }
-    }
+            document.getElementById('chat-window').innerHTML = '<div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>';
+        }
 
-    function renderServers() {
-        const container = document.getElementById('serverList');
-        container.innerHTML = Array.from(servers).map(s => `<span class="badge online">● ${s}</span>`).join('');
-    }
+        function switchTab(mode) {
+            currentAuthMode = mode;
+            document.getElementById('authError').classList.add('hidden');
+            if (mode === 'login') {
+                document.getElementById('tab-login').classList.add('active');
+                document.getElementById('tab-register').classList.remove('active');
+                document.getElementById('geminiGroup').classList.add('hidden');
+                document.getElementById('authGeminiKey').required = false;
+                document.getElementById('authBtn').textContent = 'Ingresar';
+            } else {
+                document.getElementById('tab-register').classList.add('active');
+                document.getElementById('tab-login').classList.remove('active');
+                document.getElementById('geminiGroup').classList.remove('hidden');
+                document.getElementById('authGeminiKey').required = true;
+                document.getElementById('authBtn').textContent = 'Registrarse';
+            }
+        }
 
-    async function sendChat() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if(!text || servers.size === 0) return;
+        async function handleAuth(e) {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const geminiKey = document.getElementById('authGeminiKey').value.trim();
+            const errorEl = document.getElementById('authError');
 
-        appendMessage('user', text);
-        input.value = '';
+            const endpoint = currentAuthMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+            const payload = currentAuthMode === 'login' ? { username, password } : { username, password, geminiKey };
 
+<<<<<<< HEAD
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+=======
         const loading = appendMessage('ai', 'Pensando y buscando datos...');
+>>>>>>> origin/claudio
 
-        try {
-            const res = await fetch('/api/mcp/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message: text})
-            });
-            const data = await res.json();
+                if (!res.ok || data.error) {
+                    errorEl.textContent = data.error || 'Error en la petición';
+                    errorEl.classList.remove('hidden');
+                } else {
+                    setJwt(data.token);
+                    document.getElementById('authPassword').value = '';
+                    document.getElementById('authGeminiKey').value = '';
+                    checkAuth();
+                }
+            } catch (err) {
+                errorEl.textContent = 'Error de conexión con el servidor.';
+                errorEl.classList.remove('hidden');
+            }
+        }
 
-            loading.remove();
+        // ================= Settings API Key =================
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('settingsError').classList.add('hidden');
+            document.getElementById('settingsSuccess').classList.add('hidden');
+            document.getElementById('newGeminiKey').value = '';
+        }
 
-            if(data.error) {
-                appendMessage('ai', '❌ Error: ' + data.error);
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        async function updateApiKey() {
+            const newKey = document.getElementById('newGeminiKey').value.trim();
+            const errorEl = document.getElementById('settingsError');
+            const successEl = document.getElementById('settingsSuccess');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            if (!newKey) {
+                errorEl.textContent = 'La clave no puede estar vacía.';
+                errorEl.classList.remove('hidden');
                 return;
             }
 
-            // Renderizado inteligente
-            let html = `<div>${data.reply}</div>`;
+            try {
+                const res = await fetch('/api/auth/keys', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + getJwt()
+                    },
+                    body: JSON.stringify({ newGeminiKey: newKey })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    errorEl.textContent = data.error || 'Error al actualizar.';
+                    errorEl.classList.remove('hidden');
+                } else {
+                    successEl.textContent = 'API Key actualizada. Se usará en tu próxima pregunta.';
+                    successEl.classList.remove('hidden');
+                    setTimeout(() => closeSettings(), 2000);
+                }
+            } catch (err) {
+                errorEl.textContent = 'Error de conexión.';
+                errorEl.classList.remove('hidden');
+            }
+        }
 
+<<<<<<< HEAD
+        // ================= Chat y MCP =================
+        async function authFetch(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['Authorization'] = 'Bearer ' + getJwt();
+            const res = await fetch(url, options);
+            if (res.status === 401) {
+                logout();
+                throw new Error('Sesión expirada');
+            }
+            return res;
+        }
+
+        async function connectServer() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) return;
+
+            try {
+                const res = await authFetch('/api/mcp/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+
+                servers.add(url);
+                renderServers();
+                document.getElementById('urlInput').value = '';
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
+        function renderServers() {
+            const container = document.getElementById('serverList');
+            container.innerHTML = Array.from(servers).map(s => `<span class="badge online">● ${s}</span>`).join('');
+        }
+
+        async function sendChat() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return; // Permitir preguntar sin servers conectados (la IA responderá normalmente)
+
+            appendMessage('user', text);
+            input.value = '';
+
+            const loading = appendMessage('ai', 'Pensando...');
+
+            try {
+                const res = await authFetch('/api/mcp/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+
+                loading.remove();
+
+                if (data.error) {
+                    appendMessage('ai', '❌ Error: ' + data.error);
+                    return;
+                }
+
+                // Renderizado inteligente
+                let html = `<div>${data.reply}</div>`;
+
+                if (data.toolInfo) {
+                    html += `
+                    <div class="tool-call">
+                        <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
+                        <div class="json-block"><b>Input:</b> ${JSON.stringify(data.toolInfo.arguments)}</div>
+                        <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(data.toolInfo.rawResult)}</div>
+                    </div>
+                `;
+                }
+
+                appendMessage('ai', html, true);
+
+            } catch (e) {
+                loading.remove();
+                appendMessage('ai', 'Error: ' + e.message);
+=======
             // Verificamos si hay un array de herramientas ejecutadas
             if(data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
                 data.toolInfo.forEach(tool => {
@@ -142,26 +632,24 @@
                         </div>
                     `;
                 });
+>>>>>>> origin/claudio
             }
-
-            appendMessage('ai', html, true);
-
-        } catch(e) {
-            loading.remove();
-            appendMessage('ai', 'Error de conexión.');
         }
-    }
 
-    function appendMessage(role, content, isHtml = false) {
-        const win = document.getElementById('chat-window');
-        const div = document.createElement('div');
-        div.className = `msg ${role}`;
-        if(isHtml) div.innerHTML = content;
-        else div.textContent = content;
-        win.appendChild(div);
-        win.scrollTop = win.scrollHeight;
-        return div;
-    }
-</script>
+        function appendMessage(role, content, isHtml = false) {
+            const win = document.getElementById('chat-window');
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            if (isHtml) div.innerHTML = content;
+            else div.textContent = content;
+            win.appendChild(div);
+            win.scrollTop = win.scrollHeight;
+            return div;
+        }
+
+        // Inicialización
+        window.onload = checkAuth;
+    </script>
 </body>
+
 </html>
