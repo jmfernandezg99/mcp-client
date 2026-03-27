@@ -8,6 +8,11 @@ import io.smallrye.common.annotation.Blocking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import io.quarkus.security.Authenticated;
+import jakarta.inject.Inject;
+import org.acme.mcp.service.UserModelCache;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,22 +24,31 @@ import java.util.concurrent.atomic.AtomicReference;
 @Path("/api/mcp")
 public class McpController {
 
-    @ConfigProperty(name = "gemini.api.key")
+    @ConfigProperty(name = "gemini.api.key", defaultValue = "")
     String apiKey;
 
+    @Inject
+    JsonWebToken jwt;
+
+    @Inject
+    UserModelCache cache;
+
+    // Static model for fallback/test if needed, though we will mainly use cache.
     private ChatLanguageModel chatModel;
 
     @PostConstruct
     void initIA() {
-        try {
-            this.chatModel = GoogleAiGeminiChatModel.builder()
-                    .apiKey(this.apiKey.trim())
-                    .modelName("gemini-2.5-flash")
-                    .temperature(0.0)
-                    .build();
-            System.out.println("✅ Cerebro Gemini 2.0 Flash activado.");
-        } catch (Exception e) {
-            System.err.println("❌ Error IA: " + e.getMessage());
+        if (apiKey != null && !apiKey.isEmpty() && !apiKey.equals("apikey")) {
+            try {
+                this.chatModel = GoogleAiGeminiChatModel.builder()
+                        .apiKey(this.apiKey.trim())
+                        .modelName("gemini-2.5-flash")
+                        .temperature(0.0)
+                        .build();
+                System.out.println("✅ Cerebro Gemini 2.0 Flash activado (Global).");
+            } catch (Exception e) {
+                System.err.println("❌ Error IA: " + e.getMessage());
+            }
         }
     }
 
@@ -122,10 +136,14 @@ public class McpController {
     @POST
     @Path("/chat")
     @Blocking
+    @Authenticated
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Object chatWithAgent(Map<String, Object> payload) {
         String userMessage = (String) payload.get("message");
+        UUID userId = UUID.fromString(jwt.getSubject());
+        ChatLanguageModel userChatModel = cache.getModel(userId);
+        
         ObjectMapper mapper = new ObjectMapper();
         try {
             List<Object> allTools = new ArrayList<>();
@@ -145,7 +163,7 @@ public class McpController {
             String prompt = "Responde SOLO JSON. Usuario: " + userMessage + ". Herramientas: " + mapper.writeValueAsString(allTools) +
                     ". Formato: {\"action\": \"tool\", \"toolName\": \"...\", \"arguments\": {...}} o {\"action\": \"reply\", \"message\": \"...\"}";
 
-            String aiResponse = chatModel.generate(prompt);
+            String aiResponse = userChatModel.generate(prompt);
             if (aiResponse.contains("{")) {
                 aiResponse = aiResponse.substring(aiResponse.indexOf("{"), aiResponse.lastIndexOf("}") + 1);
             }
@@ -158,7 +176,7 @@ public class McpController {
 
                 Object toolRes = executeTool(Map.of("url", toolMap.get(name), "toolName", name, "arguments", args));
 
-                String finalAns = chatModel.generate("Resultado de " + name + ": " + mapper.writeValueAsString(toolRes) + ". Responde al usuario en español.");
+                String finalAns = userChatModel.generate("Resultado de " + name + ": " + mapper.writeValueAsString(toolRes) + ". Responde al usuario en español.");
 
                 return Map.of(
                         "reply", finalAns,

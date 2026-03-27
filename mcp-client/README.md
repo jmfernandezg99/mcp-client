@@ -1,73 +1,77 @@
-# mcp-client
+# MCP User Authentication & Chat Client
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## 📖 ¿Qué es este proyecto?
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Este proyecto es un cliente **Model Context Protocol (MCP)** desarrollado sobre **Quarkus** que permite conectarse dinámicamente a servidores MCP y conversar con la IA de Google Gemini 2.0 Flash. La herramienta interactúa con las capabilities (herramientas) reportadas por los servidores MCP proporcionando respuestas ricas a los usuarios.
 
-## Running the application in dev mode
+Novedades de la versión actual:
+* **Sistema de Usuarios**: Los usuarios pueden registrarse y conectar su propia Gemini API Key.
+* **Seguridad Avanzada**: Las API Keys de cada usuario se guardan cifradas en base de datos usando **AES-256-GCM**.
+* **Autenticación JWT**: Los endpoints del chat están protegidos por tokens JWT sin necesidad de usar un proveedor de identidad de terceros como Keycloak.
 
-You can run your application in dev mode that enables live coding using:
+## ⚙️ ¿Cómo funciona?
+
+1. **Registro:** El usuario introduce su nombre, contraseña y API Key de Gemini. El backend hashea la contraseña con BCrypt y cifra la API key en memoria con `APP_MASTER_KEY` antes de guardarla en PostgreSQL.
+2. **Login:** Al comprobar credenciales, la API expide un `JWT` (caducidad 8h) autorizado que el frontend almacena en el `localStorage`.
+3. **Chat Seguro:** Todas las llamadas al chat adjuntan el `Authorization: Bearer <token>`. El servidor identifica al creador subyacente del token (`userId`), va a la base de datos (por caché), extrae y descifra en demanda la API key, y la utiliza contra los servidores de Google.
+4. **Invalidación Simple:** El usuario puede actualizar su API Key por medio de la interfaz gráfica y Quarkus descarta automáticamente su llave cacheada de memoria.
+
+---
+
+## 🚀 Puesta en Funcionamiento
+
+### 1. Requisitos Previos
+* Tener **Docker** y **Docker Compose** instalados (para PostgreSQL y empaquetado final).
+* Tener **OpenSSL** instalado (ejecución por CLI para la generación de llaves de asimetría RSA).
+* Java 17 o superior.
+
+### 2. Generar el Par de Claves RSA (para JWT)
+El sistema utiliza un sistema asimétrico de llaves para firmar los accesos de usuario. Estas llaves tienen que depositarse dentro de los recursos de Quarkus:
 
 ```shell script
+cd src/main/resources
+openssl genrsa -out rsaPrivateKey.pem 2048
+openssl rsa -pubout -in rsaPrivateKey.pem -out publicKey.pem
+cd ../../../
+```
+
+### 3. Configurar las Variables de Entorno
+
+Toma de ejemplo el `.env.example` provisto para generar el archivo de configuración base:
+
+```shell script
+cp .env.example .env
+```
+⚠️ **MUY IMPORTANTE**: En tu archivo `.env`, localiza la propiedad `APP_MASTER_KEY`. Para que la encripción AES-256-GCM funcione correctamente, el string de la key debe tener **EXACTAMENTE 32 caracteres**. Por ejemplo:
+`APP_MASTER_KEY=MySecurePasswordForAesEncrypt123`
+
+### 4. Iniciar PostgreSQL
+
+El proyecto contiene un esquema y migraciones generados via Flyway. Inicia la base de datos directamente con:
+
+```shell script
+docker compose up postgres -d
+```
+
+### 5. Compilar y Ejecutar Quarkus
+
+Una vez la base de datos esté lista, arranca la aplicación de en modo "Dev" para compilar todo y ejecutar en tiempo real:
+*(Recuerda tener correctamente configurado APP_MASTER_KEY como variable de entorno si la ejecutas manual, o exportala en la terminal previamente)*
+
+**Opción A (Quarkus Dev):**
+```shell script
+# Puedes ejecutar el comando inyectando la variable manualmente (útil para cmd/powershell o Bash):
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
+**Opción B (Docker Compose Completo):**
 ```shell script
-./mvnw package
+docker compose up --build -d
 ```
+*(Si levantas solo la base de datos, debes ejecutar Quarkus a mano exponiendo la llave maestra y URL de BBDD en las variables de entorno).*
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/mcp-client-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST Client ([guide](https://quarkus.io/guides/rest-client)): Call REST services
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-
-## Provided Code
-
-### REST Client
-
-Invoke different services through REST with JSON
-
-[Related guide section...](https://quarkus.io/guides/rest-client)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+### 6. Uso desde el Navegador
+Abre [http://localhost:8081](http://localhost:8081).
+* Se presentará un formulario de **Ingreso** / **Registro** central.
+* Regístrate y accede con tu llave válida de Gemini.
+* Puedes cambiar esta llave pulsando "⚙️ API Key" en la cabecera del chat la próxima vez que inicies sesión.
