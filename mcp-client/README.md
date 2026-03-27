@@ -1,77 +1,66 @@
-# MCP User Authentication & Chat Client
+# 🤖 Documentación Técnica: Claudio (Orquestador MCP)
 
-## 📖 ¿Qué es este proyecto?
+## 📌 Resumen del Proyecto
+**Claudio** es un Orquestador de Inteligencia Artificial (Agente Autónomo) construido sobre **Quarkus**. Su principal característica es la implementación del protocolo **MCP (Model Context Protocol)**, lo que le permite conectarse dinámicamente a servidores externos, descubrir sus herramientas (Tools) en tiempo real, y utilizarlas mediante la IA para resolver consultas complejas de los usuarios.
 
-Este proyecto es un cliente **Model Context Protocol (MCP)** desarrollado sobre **Quarkus** que permite conectarse dinámicamente a servidores MCP y conversar con la IA de Google Gemini 2.0 Flash. La herramienta interactúa con las capabilities (herramientas) reportadas por los servidores MCP proporcionando respuestas ricas a los usuarios.
+El "cerebro" cognitivo está impulsado por **Google Gemini 2.5 Flash** a través de la librería **LangChain4j**.
 
-Novedades de la versión actual:
-* **Sistema de Usuarios**: Los usuarios pueden registrarse y conectar su propia Gemini API Key.
-* **Seguridad Avanzada**: Las API Keys de cada usuario se guardan cifradas en base de datos usando **AES-256-GCM**.
-* **Autenticación JWT**: Los endpoints del chat están protegidos por tokens JWT sin necesidad de usar un proveedor de identidad de terceros como Keycloak.
+## 🏗️ Arquitectura del Sistema
 
-## ⚙️ ¿Cómo funciona?
+El sistema sigue una arquitectura de cliente-servidor reactiva orientada a eventos, dividida en 3 capas principales:
 
-1. **Registro:** El usuario introduce su nombre, contraseña y API Key de Gemini. El backend hashea la contraseña con BCrypt y cifra la API key en memoria con `APP_MASTER_KEY` antes de guardarla en PostgreSQL.
-2. **Login:** Al comprobar credenciales, la API expide un `JWT` (caducidad 8h) autorizado que el frontend almacena en el `localStorage`.
-3. **Chat Seguro:** Todas las llamadas al chat adjuntan el `Authorization: Bearer <token>`. El servidor identifica al creador subyacente del token (`userId`), va a la base de datos (por caché), extrae y descifra en demanda la API key, y la utiliza contra los servidores de Google.
-4. **Invalidación Simple:** El usuario puede actualizar su API Key por medio de la interfaz gráfica y Quarkus descarta automáticamente su llave cacheada de memoria.
+1. **Frontend (Interfaz de Usuario):** Una SPA (Single Page Application) en HTML/JS puro que permite al usuario gestionar las conexiones a los servidores MCP y chatear con el Agente.
+2. **Backend (Orquestador Quarkus - Puerto 8081):** El núcleo del proyecto. Mantiene el estado de las sesiones, gestiona el bucle de razonamiento de la IA y enruta las peticiones de herramientas.
+3. **Servidores MCP (Nodos Externos):** Microservicios independientes (ej. Python en puerto 8080, Quarkus en puerto 8082) que exponen capacidades mediante Server-Sent Events (SSE) y JSON-RPC.
 
----
+## ⚙️ Componentes Principales (Código Base)
 
-## 🚀 Puesta en Funcionamiento
+### 1. `McpController.java` (El Cerebro)
+Controlador REST que actúa como puente entre la interfaz de usuario, los servidores MCP y el modelo de lenguaje de Google Gemini.
+* **Gestión de Sesiones (`activeSessions`):** Utiliza un `ConcurrentHashMap` para mantener vivas las conexiones con múltiples servidores simultáneamente.
+* **Bucle Agéntico (Agentic Loop):** Implementa un bucle de razonamiento de hasta 5 iteraciones. La IA puede decidir encadenar múltiples herramientas de diferentes servidores antes de emitir una respuesta final al usuario, manteniendo una "mochila" de contexto (memoria temporal).
+* **Resolución Universal de URIs:** Capaz de conectarse a cualquier servidor interpretando rutas relativas o absolutas mediante `URI.resolve()`, evitando problemas de "Caché Envenenada".
 
-### 1. Requisitos Previos
-* Tener **Docker** y **Docker Compose** instalados (para PostgreSQL y empaquetado final).
-* Tener **OpenSSL** instalado (ejecución por CLI para la generación de llaves de asimetría RSA).
-* Java 17 o superior.
+### 2. `McpWeatherClient.java` (El Cliente Universal)
+Interfaz reactiva basada en `@RegisterRestClient` de Quarkus.
+* Agnóstica a las rutas: Utiliza `@Path("")` para adaptarse a cualquier endpoint configurado dinámicamente.
+* Abre un canal unidireccional permanente vía `SERVER_SENT_EVENTS` (SSE) para recibir eventos del servidor.
+* Utiliza peticiones `POST` síncronas para enviar comandos `JSON-RPC` (como `initialize`, `tools/list` y `tools/call`).
 
-### 2. Generar el Par de Claves RSA (para JWT)
-El sistema utiliza un sistema asimétrico de llaves para firmar los accesos de usuario. Estas llaves tienen que depositarse dentro de los recursos de Quarkus:
+## 🔄 Flujo de Comunicación (El Protocolo MCP)
 
-```shell script
-cd src/main/resources
-openssl genrsa -out rsaPrivateKey.pem 2048
-openssl rsa -pubout -in rsaPrivateKey.pem -out publicKey.pem
-cd ../../../
-```
+Cuando el usuario añade una nueva URL en el dashboard (ej. `http://localhost:8082/mcp/sse`), ocurre la siguiente magia por debajo:
 
-### 3. Configurar las Variables de Entorno
+1. **Handshake (GET):** Claudio abre la conexión SSE con la URL indicada.
+2. **Enrutamiento (Evento `endpoint`):** El servidor responde indicando en qué URI secreta o dinámica espera recibir los POSTs (ej. `/mcp/message?sessionId=123`).
+3. **Inicialización (POST `initialize`):** Claudio se presenta y negocia la versión del protocolo (`2024-11-05`).
+4. **Descubrimiento (POST `tools/list`):** Claudio pide la lista de herramientas disponibles y las almacena en la caché de la sesión.
 
-Toma de ejemplo el `.env.example` provisto para generar el archivo de configuración base:
+## 🧠 El Bucle de Razonamiento (Agentic Workflow)
 
-```shell script
-cp .env.example .env
-```
-⚠️ **MUY IMPORTANTE**: En tu archivo `.env`, localiza la propiedad `APP_MASTER_KEY`. Para que la encripción AES-256-GCM funcione correctamente, el string de la key debe tener **EXACTAMENTE 32 caracteres**. Por ejemplo:
-`APP_MASTER_KEY=MySecurePasswordForAesEncrypt123`
+Cuando el usuario hace una pregunta, Claudio no actúa como un simple pasador de mensajes. Sigue un patrón de **Agente ReAct (Reasoning and Acting)**:
 
-### 4. Iniciar PostgreSQL
+1. **Evaluación:** Se inyecta la pregunta del usuario y el esquema JSON de TODAS las herramientas descubiertas en el *System Prompt* de Gemini.
+2. **Decisión:** Si Gemini necesita datos, responde con una estructura JSON pidiendo ejecutar una acción (`{"action": "tool", "toolName": "buscar_nota"...}`).
+3. **Ejecución:** El backend captura esta intención, enruta la petición al servidor MCP dueño de esa herramienta, y obtiene el resultado (`"Gandia"`).
+4. **Iteración:** Se añade el resultado al historial de la conversación oculta y se le vuelve a preguntar a Gemini: *"Aquí tienes el dato, ¿qué hacemos ahora?"*.
+5. **Resolución:** Si Gemini determina que necesita usar otra herramienta (ej. el clima de Gandia), repite el ciclo. Si ya tiene todo, envía la respuesta final en lenguaje natural (`{"action": "reply", "message": "..."}`).
 
-El proyecto contiene un esquema y migraciones generados via Flyway. Inicia la base de datos directamente con:
+## 🚀 Despliegue y Configuración
 
-```shell script
-docker compose up postgres -d
-```
+### Prerrequisitos
+* Java 17+
+* Maven
+* Una API Key de Google Gemini Studio.
 
-### 5. Compilar y Ejecutar Quarkus
+### Variables de Entorno (`application.properties`)
+Debe configurarse la clave de la IA para que el orquestador pueda pensar:
+```properties
+gemini.api.key=AIzaSyTuClaveDeGoogleAqui...
 
-Una vez la base de datos esté lista, arranca la aplicación de en modo "Dev" para compilar todo y ejecutar en tiempo real:
-*(Recuerda tener correctamente configurado APP_MASTER_KEY como variable de entorno si la ejecutas manual, o exportala en la terminal previamente)*
+Ejecución en Modo Desarrollo
+Para arrancar el orquestador con Live Reload:
 
-**Opción A (Quarkus Dev):**
-```shell script
-# Puedes ejecutar el comando inyectando la variable manualmente (útil para cmd/powershell o Bash):
-./mvnw quarkus:dev
-```
-
-**Opción B (Docker Compose Completo):**
-```shell script
-docker compose up --build -d
-```
-*(Si levantas solo la base de datos, debes ejecutar Quarkus a mano exponiendo la llave maestra y URL de BBDD en las variables de entorno).*
-
-### 6. Uso desde el Navegador
-Abre [http://localhost:8081](http://localhost:8081).
-* Se presentará un formulario de **Ingreso** / **Registro** central.
-* Regístrate y accede con tu llave válida de Gemini.
-* Puedes cambiar esta llave pulsando "⚙️ API Key" en la cabecera del chat la próxima vez que inicies sesión.
+Bash
+./mvnw clean quarkus:dev
+El panel de control (Dashboard) estará disponible en: http://localhost:8081
