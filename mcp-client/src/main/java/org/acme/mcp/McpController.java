@@ -42,7 +42,7 @@ public class McpController {
             try {
                 this.chatModel = GoogleAiGeminiChatModel.builder()
                         .apiKey(this.apiKey.trim())
-                        .modelName("gemini-2.5-flash")
+                        .modelName("gemini-2.0-flash")
                         .temperature(0.0)
                         .build();
                 System.out.println("✅ Cerebro Gemini 2.0 Flash activado (Global).");
@@ -160,34 +160,61 @@ public class McpController {
                 return Map.of("reply", "No detecto herramientas conectadas.");
             }
 
-            String prompt = "Responde SOLO JSON. Usuario: " + userMessage + ". Herramientas: " + mapper.writeValueAsString(allTools) +
-                    ". Formato: {\"action\": \"tool\", \"toolName\": \"...\", \"arguments\": {...}} o {\"action\": \"reply\", \"message\": \"...\"}";
+            String toolsJson = mapper.writeValueAsString(allTools);
+            // LA MAGIA: Memoria acumulativa para el bucle
+            String conversationHistory = "Usuario: " + userMessage;
+            List<Map<String, Object>> executedTools = new ArrayList<>();
 
-            String aiResponse = userChatModel.generate(prompt);
-            if (aiResponse.contains("{")) {
-                aiResponse = aiResponse.substring(aiResponse.indexOf("{"), aiResponse.lastIndexOf("}") + 1);
+            int maxSteps = 5; // Límite de seguridad para que no se quede pensando eternamente
+
+            for (int step = 0; step < maxSteps; step++) {
+                String prompt = "Eres un orquestador IA avanzado. " +
+                        "Historial de la investigación actual: " + conversationHistory + ". " +
+                        "Herramientas disponibles: " + toolsJson + ". " +
+                        "REGLA OBLIGATORIA: Responde SOLO con un JSON válido. " +
+                        "Si necesitas más datos de las herramientas para responder a la petición original, devuelve: { \"action\": \"tool\", \"toolName\": \"...\", \"arguments\": {...} }. " +
+                        "Si YA TIENES todos los datos necesarios en el historial, responde FINALMENTE al usuario devolviendo: { \"action\": \"reply\", \"message\": \"tu respuesta final en español combinando todos los datos descubiertos\" }.";
+
+                String aiResponse = userChatModel.generate(prompt);
+
+                // Limpiamos el JSON por si Gemini le pone formato Markdown
+                if (aiResponse.contains("{")) {
+                    aiResponse = aiResponse.substring(aiResponse.indexOf("{"), aiResponse.lastIndexOf("}") + 1);
+                }
+
+                Map<String, Object> decision = mapper.readValue(aiResponse, Map.class);
+
+                if ("tool".equals(decision.get("action"))) {
+                    String name = (String) decision.get("toolName");
+                    Map<String, Object> args = (Map<String, Object>) decision.get("arguments");
+
+                    // Ejecutamos la herramienta en el servidor correspondiente
+                    Object toolRes = executeTool(Map.of("url", toolMap.get(name), "toolName", name, "arguments", args));
+
+                    // ¡Añadimos el resultado a la mochila de la IA y el bucle continúa!
+                    conversationHistory += "\nSistema: Resultado de usar la herramienta '" + name + "' = " + mapper.writeValueAsString(toolRes);
+
+                    executedTools.add(Map.of(
+                            "name", name,
+                            "arguments", args,
+                            "rawResult", toolRes
+                    ));
+                } else {
+                    // La IA ha decidido que ya tiene todo para responder
+                    return Map.of(
+                            "reply", (String) decision.get("message"),
+                            "toolInfo", executedTools
+                    );
+                }
             }
 
-            Map<String, Object> decision = mapper.readValue(aiResponse, Map.class);
+            return Map.of(
+                    "reply", "He recopilado mucha información, pero alcancé el límite de seguridad de 5 herramientas seguidas.",
+                    "toolInfo", executedTools
+            );
 
-            if ("tool".equals(decision.get("action"))) {
-                String name = (String) decision.get("toolName");
-                Map<String, Object> args = (Map<String, Object>) decision.get("arguments");
-
-                Object toolRes = executeTool(Map.of("url", toolMap.get(name), "toolName", name, "arguments", args));
-
-                String finalAns = userChatModel.generate("Resultado de " + name + ": " + mapper.writeValueAsString(toolRes) + ". Responde al usuario en español.");
-
-                return Map.of(
-                        "reply", finalAns,
-                        "toolInfo", Map.of(
-                                "name", name,
-                                "arguments", args,
-                                "rawResult", toolRes
-                        )
-                );
-            }
-            return Map.of("reply", (String) decision.get("message"));
-        } catch (Exception e) { return Map.of("error", "Fallo: " + e.getMessage()); }
+        } catch (Exception e) {
+            return Map.of("error", "Fallo interno en el orquestador: " + e.getMessage());
+        }
     }
 }
