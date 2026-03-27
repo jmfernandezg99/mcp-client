@@ -24,16 +24,32 @@ import java.util.concurrent.atomic.AtomicReference;
 @Path("/api/mcp")
 public class McpController {
 
+    @ConfigProperty(name = "gemini.api.key", defaultValue = "")
+    String apiKey;
+
     @Inject
     JsonWebToken jwt;
 
     @Inject
     UserModelCache cache;
 
-    // Static model removed because we use per-user cache now.
-    // private ChatLanguageModel chatModel;
+    private ChatLanguageModel chatModel;
 
-    // initIA() removed since each request uses its own model from cache.
+    @PostConstruct
+    void initIA() {
+        if (apiKey != null && !apiKey.isEmpty() && !apiKey.equals("apikey")) {
+            try {
+                this.chatModel = GoogleAiGeminiChatModel.builder()
+                        .apiKey(this.apiKey.trim())
+                        .modelName("gemini-2.5-flash")
+                        .temperature(0.0)
+                        .build();
+                System.out.println("✅ Cerebro Gemini 2.5 Flash activado (Global Fallback).");
+            } catch (Exception e) {
+                System.err.println("❌ Error IA: " + e.getMessage());
+            }
+        }
+    }
 
     private static final Map<String, ActiveSession> activeSessions = new ConcurrentHashMap<>();
 
@@ -52,7 +68,6 @@ public class McpController {
     public Object connectToServer(Map<String, Object> payload) {
         String targetUrl = (String) payload.get("url");
 
-        // 1. Prevención de Caché Envenenada (de la rama remota)
         if (activeSessions.containsKey(targetUrl)) {
             if (activeSessions.get(targetUrl).cachedTools.isEmpty()) {
                 activeSessions.remove(targetUrl);
@@ -72,7 +87,6 @@ public class McpController {
 
             sseClient.connectToSse().subscribe().with(event -> {
                 if ("endpoint".equals(event.name())) {
-                    System.out.println("✅ SSE Endpoint recibido: " + event.data());
                     sessionUrl.set(event.data());
                     endpointLatch.countDown();
                 } else if ("message".equals(event.name())) {
@@ -80,16 +94,14 @@ public class McpController {
                     newSession.messageLatch.get().countDown();
                 }
             }, f -> {
-                System.err.println("❌ Error en suscripción SSE: " + f.getMessage());
+                System.err.println("Aviso: Fallo de conexión SSE con " + targetUrl + " - " + f.getMessage());
+                endpointLatch.countDown();
             });
 
-            // Usamos nuestro timeout de 10s (más seguro en Docker)
-            if (!endpointLatch.await(10, TimeUnit.SECONDS)) {
-                System.err.println("❌ Timeout esperando endpoint SSE para: " + targetUrl);
-                return Map.of("error", "Timeout SSE. Verifica que la URL sea accesible desde el contenedor (usa host.docker.internal si el servidor está fuera de Docker).");
+            if (!endpointLatch.await(5, TimeUnit.SECONDS)) {
+                return Map.of("error", "Timeout SSE al intentar conectar con " + targetUrl);
             }
 
-            // 2. SOLUCIÓN DE RUTAS UNIVERSALES: Usamos URI.resolve() (de la rama remota)
             URI baseUri = new URI(targetUrl);
             URI messageUri = baseUri.resolve(sessionUrl.get());
 
@@ -106,7 +118,6 @@ public class McpController {
 
             Object toolsResponse = askForTools(targetUrl);
 
-            // Si fallamos pidiendo herramientas, no nos guardamos la sesión rota (de la rama remota)
             if (toolsResponse instanceof Map && ((Map) toolsResponse).containsKey("error")) {
                 activeSessions.remove(targetUrl);
             }
@@ -168,7 +179,7 @@ public class McpController {
         String userMessage = (String) payload.get("message");
         UUID userId = UUID.fromString(jwt.getSubject());
         ChatLanguageModel userChatModel = cache.getModel(userId);
-        
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             List<Object> allTools = new ArrayList<>();
@@ -186,7 +197,7 @@ public class McpController {
             }
 
             String toolsJson = mapper.writeValueAsString(allTools);
-            // Memoria acumulativa para el bucle
+
             String conversationHistory = "Usuario: " + userMessage;
             List<Map<String, Object>> executedTools = new ArrayList<>();
 

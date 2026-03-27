@@ -295,336 +295,333 @@
 
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Claudio</h1>
-            <p style="color: #94a3b8">Quarkus Agente MCP</p>
-            <div id="userInfo" class="user-info hidden">
-                <span id="usernameDisplay">User</span>
-                <button class="btn-settings" onclick="openSettings()">⚙️ API Key</button>
-                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-            </div>
-        </div>
-
-        <!-- VISTA AUTH -->
-        <div id="authView" class="card" style="max-width: 400px; margin: 0 auto;">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('login')" id="tab-login">Login</div>
-                <div class="tab" onclick="switchTab('register')" id="tab-register">Registro</div>
-            </div>
-
-            <form id="authForm" onsubmit="handleAuth(event)">
-                <div class="error-msg hidden" id="authError"></div>
-                <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="authUsername" required>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="authPassword" required>
-                </div>
-                <div class="form-group hidden" id="geminiGroup">
-                    <label>Gemini API Key</label>
-                    <input type="password" id="authGeminiKey">
-                </div>
-                <button type="submit" style="width: 100%; margin-top: 10px;" id="authBtn">Ingresar</button>
-            </form>
-        </div>
-
-        <!-- VISTA MAIN APP -->
-        <div id="mainView" class="hidden">
-            <div class="card">
-                <div class="input-group">
-                    <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8081)">
-                    <button onclick="connectServer()">Conectar</button>
-                </div>
-                <div id="serverList" class="server-list"></div>
-            </div>
-
-            <div class="card" style="padding: 25px;">
-                <div id="chat-window">
-                    <div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="chatInput" placeholder="Pregunta algo..."
-                        onkeypress="if(event.key==='Enter') sendChat()">
-                    <button onclick="sendChat()" style="background: #10b981;">Enviar</button>
-                </div>
-            </div>
+<div class="container">
+    <div class="header">
+        <h1>Claudio</h1>
+        <p style="color: #94a3b8">Quarkus Agente MCP</p>
+        <div id="userInfo" class="user-info hidden">
+            <span id="usernameDisplay">User</span>
+            <button class="btn-settings" onclick="openSettings()">⚙️ API Key</button>
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
         </div>
     </div>
 
-    <!-- MODAL SETTINGS -->
-    <div id="settingsModal" class="modal-overlay hidden">
-        <div class="modal">
-            <h2>Cambiar Gemini API Key</h2>
-            <div class="error-msg hidden" id="settingsError"></div>
-            <div class="success-msg hidden" id="settingsSuccess"></div>
+    <div id="authView" class="card" style="max-width: 400px; margin: 0 auto;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')" id="tab-login">Login</div>
+            <div class="tab" onclick="switchTab('register')" id="tab-register">Registro</div>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div class="error-msg hidden" id="authError"></div>
             <div class="form-group">
-                <label>Nueva API Key</label>
-                <input type="password" id="newGeminiKey">
+                <label>Usuario</label>
+                <input type="text" id="authUsername" required>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button onclick="updateApiKey()" style="flex: 1;">Actualizar</button>
-                <button onclick="closeSettings()" style="flex: 1; background: #334155;">Cancelar</button>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="authPassword" required>
+            </div>
+            <div class="form-group hidden" id="geminiGroup">
+                <label>Gemini API Key</label>
+                <input type="password" id="authGeminiKey">
+            </div>
+            <button type="submit" style="width: 100%; margin-top: 10px;" id="authBtn">Ingresar</button>
+        </form>
+    </div>
+
+    <div id="mainView" class="hidden">
+        <div class="card">
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="URL del Servidor MCP (ej. http://localhost:8081)">
+                <button onclick="connectServer()">Conectar</button>
+            </div>
+            <div id="serverList" class="server-list"></div>
+        </div>
+
+        <div class="card" style="padding: 25px;">
+            <div id="chat-window">
+                <div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>
+            </div>
+            <div class="input-group">
+                <input type="text" id="chatInput" placeholder="Pregunta algo..."
+                       onkeypress="if(event.key==='Enter') sendChat()">
+                <button onclick="sendChat()" style="background: #10b981;">Enviar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let currentAuthMode = 'login';
-        const servers = new Set();
+<div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal">
+        <h2>Cambiar Gemini API Key</h2>
+        <div class="error-msg hidden" id="settingsError"></div>
+        <div class="success-msg hidden" id="settingsSuccess"></div>
+        <div class="form-group">
+            <label>Nueva API Key</label>
+            <input type="password" id="newGeminiKey">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="updateApiKey()" style="flex: 1;">Actualizar</button>
+            <button onclick="closeSettings()" style="flex: 1; background: #334155;">Cancelar</button>
+        </div>
+    </div>
+</div>
 
-        // ================= JWT y AUTH Logic =================
-        function getJwt() {
-            return localStorage.getItem('jwt');
+<script>
+    let currentAuthMode = 'login';
+    const servers = new Set();
+
+    // ================= JWT y AUTH Logic =================
+    function getJwt() {
+        return localStorage.getItem('jwt');
+    }
+    function setJwt(token) {
+        localStorage.setItem('jwt', token);
+    }
+
+    function parseJwt(token) {
+        try {
+            return JSON.parse(atob(token.split('.')[1]));
+        } catch (e) {
+            return null;
         }
-        function setJwt(token) {
-            localStorage.setItem('jwt', token);
-        }
+    }
 
-        function parseJwt(token) {
-            try {
-                return JSON.parse(atob(token.split('.')[1]));
-            } catch (e) {
-                return null;
+    function checkAuth() {
+        const token = getJwt();
+        if (token) {
+            const payload = parseJwt(token);
+            if (payload && payload.exp * 1000 > Date.now()) {
+                document.getElementById('authView').classList.add('hidden');
+                document.getElementById('mainView').classList.remove('hidden');
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('usernameDisplay').textContent = payload.username || 'Usuario';
+                return true;
             }
         }
+        logout();
+        return false;
+    }
 
-        function checkAuth() {
-            const token = getJwt();
-            if (token) {
-                const payload = parseJwt(token);
-                if (payload && payload.exp * 1000 > Date.now()) {
-                    document.getElementById('authView').classList.add('hidden');
-                    document.getElementById('mainView').classList.remove('hidden');
-                    document.getElementById('userInfo').classList.remove('hidden');
-                    document.getElementById('usernameDisplay').textContent = payload.username || 'Usuario';
-                    return true;
-                }
-            }
-            logout();
-            return false;
+    function logout() {
+        localStorage.removeItem('jwt');
+        document.getElementById('authView').classList.remove('hidden');
+        document.getElementById('mainView').classList.add('hidden');
+        document.getElementById('userInfo').classList.add('hidden');
+        servers.clear();
+        renderServers();
+        document.getElementById('chat-window').innerHTML = '<div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>';
+    }
+
+    function switchTab(mode) {
+        currentAuthMode = mode;
+        document.getElementById('authError').classList.add('hidden');
+        if (mode === 'login') {
+            document.getElementById('tab-login').classList.add('active');
+            document.getElementById('tab-register').classList.remove('active');
+            document.getElementById('geminiGroup').classList.add('hidden');
+            document.getElementById('authGeminiKey').required = false;
+            document.getElementById('authBtn').textContent = 'Ingresar';
+        } else {
+            document.getElementById('tab-register').classList.add('active');
+            document.getElementById('tab-login').classList.remove('active');
+            document.getElementById('geminiGroup').classList.remove('hidden');
+            document.getElementById('authGeminiKey').required = true;
+            document.getElementById('authBtn').textContent = 'Registrarse';
         }
+    }
 
-        function logout() {
-            localStorage.removeItem('jwt');
-            document.getElementById('authView').classList.remove('hidden');
-            document.getElementById('mainView').classList.add('hidden');
-            document.getElementById('userInfo').classList.add('hidden');
-            servers.clear();
-            renderServers();
-            document.getElementById('chat-window').innerHTML = '<div class="msg ai">¡Hola! Conecta un servidor MCP arriba y pregúntame lo que necesites.</div>';
-        }
+    async function handleAuth(e) {
+        e.preventDefault();
+        const username = document.getElementById('authUsername').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        const geminiKey = document.getElementById('authGeminiKey').value.trim();
+        const errorEl = document.getElementById('authError');
 
-        function switchTab(mode) {
-            currentAuthMode = mode;
-            document.getElementById('authError').classList.add('hidden');
-            if (mode === 'login') {
-                document.getElementById('tab-login').classList.add('active');
-                document.getElementById('tab-register').classList.remove('active');
-                document.getElementById('geminiGroup').classList.add('hidden');
-                document.getElementById('authGeminiKey').required = false;
-                document.getElementById('authBtn').textContent = 'Ingresar';
+        const endpoint = currentAuthMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+        const payload = currentAuthMode === 'login' ? { username, password } : { username, password, geminiKey };
+
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (!res.ok || data.error) {
+                errorEl.textContent = data.error || 'Error en la petición';
+                errorEl.classList.remove('hidden');
             } else {
-                document.getElementById('tab-register').classList.add('active');
-                document.getElementById('tab-login').classList.remove('active');
-                document.getElementById('geminiGroup').classList.remove('hidden');
-                document.getElementById('authGeminiKey').required = true;
-                document.getElementById('authBtn').textContent = 'Registrarse';
+                setJwt(data.token);
+                document.getElementById('authPassword').value = '';
+                document.getElementById('authGeminiKey').value = '';
+                checkAuth();
             }
+        } catch (err) {
+            errorEl.textContent = 'Error de conexión con el servidor.';
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    // ================= Settings API Key =================
+    function openSettings() {
+        document.getElementById('settingsModal').classList.remove('hidden');
+        document.getElementById('settingsError').classList.add('hidden');
+        document.getElementById('settingsSuccess').classList.add('hidden');
+        document.getElementById('newGeminiKey').value = '';
+    }
+
+    function closeSettings() {
+        document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    async function updateApiKey() {
+        const newKey = document.getElementById('newGeminiKey').value.trim();
+        const errorEl = document.getElementById('settingsError');
+        const successEl = document.getElementById('settingsSuccess');
+        errorEl.classList.add('hidden');
+        successEl.classList.add('hidden');
+
+        if (!newKey) {
+            errorEl.textContent = 'La clave no puede estar vacía.';
+            errorEl.classList.remove('hidden');
+            return;
         }
 
-        async function handleAuth(e) {
-            e.preventDefault();
-            const username = document.getElementById('authUsername').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-            const geminiKey = document.getElementById('authGeminiKey').value.trim();
-            const errorEl = document.getElementById('authError');
-
-            const endpoint = currentAuthMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-            const payload = currentAuthMode === 'login' ? { username, password } : { username, password, geminiKey };
-
-            try {
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-
-                if (!res.ok || data.error) {
-                    errorEl.textContent = data.error || 'Error en la petición';
-                    errorEl.classList.remove('hidden');
-                } else {
-                    setJwt(data.token);
-                    document.getElementById('authPassword').value = '';
-                    document.getElementById('authGeminiKey').value = '';
-                    checkAuth();
-                }
-            } catch (err) {
-                errorEl.textContent = 'Error de conexión con el servidor.';
+        try {
+            const res = await fetch('/api/auth/keys', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getJwt()
+                },
+                body: JSON.stringify({ newGeminiKey: newKey })
+            });
+            const data = await res.json();
+            if (!res.ok || data.error) {
+                errorEl.textContent = data.error || 'Error al actualizar.';
                 errorEl.classList.remove('hidden');
+            } else {
+                successEl.textContent = 'API Key actualizada. Se usará en tu próxima pregunta.';
+                successEl.classList.remove('hidden');
+                setTimeout(() => closeSettings(), 2000);
             }
+        } catch (err) {
+            errorEl.textContent = 'Error de conexión.';
+            errorEl.classList.remove('hidden');
         }
+    }
 
-        // ================= Settings API Key =================
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-            document.getElementById('settingsError').classList.add('hidden');
-            document.getElementById('settingsSuccess').classList.add('hidden');
-            document.getElementById('newGeminiKey').value = '';
+    // ================= Chat y MCP =================
+    async function authFetch(url, options = {}) {
+        options.headers = options.headers || {};
+        options.headers['Authorization'] = 'Bearer ' + getJwt();
+        const res = await fetch(url, options);
+        if (res.status === 401) {
+            logout();
+            throw new Error('Sesión expirada');
         }
+        return res;
+    }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
+    async function connectServer() {
+        const url = document.getElementById('urlInput').value.trim();
+        if (!url) return;
 
-        async function updateApiKey() {
-            const newKey = document.getElementById('newGeminiKey').value.trim();
-            const errorEl = document.getElementById('settingsError');
-            const successEl = document.getElementById('settingsSuccess');
-            errorEl.classList.add('hidden');
-            successEl.classList.add('hidden');
+        try {
+            const res = await authFetch('/api/mcp/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
 
-            if (!newKey) {
-                errorEl.textContent = 'La clave no puede estar vacía.';
-                errorEl.classList.remove('hidden');
+            servers.add(url);
+            renderServers();
+            document.getElementById('urlInput').value = '';
+        } catch (e) { alert("Error: " + e.message); }
+    }
+
+    function renderServers() {
+        const container = document.getElementById('serverList');
+        container.innerHTML = Array.from(servers).map(s => `<span class="badge online">● ${s}</span>`).join('');
+    }
+
+    async function sendChat() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return; // Permitir preguntar sin servers conectados (la IA responderá normalmente)
+
+        appendMessage('user', text);
+        input.value = '';
+
+        const loading = appendMessage('ai', 'Pensando...');
+
+        try {
+            const res = await authFetch('/api/mcp/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+
+            loading.remove();
+
+            if (data.error) {
+                appendMessage('ai', '❌ Error: ' + data.error);
                 return;
             }
 
-            try {
-                const res = await fetch('/api/auth/keys', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + getJwt()
-                    },
-                    body: JSON.stringify({ newGeminiKey: newKey })
-                });
-                const data = await res.json();
-                if (!res.ok || data.error) {
-                    errorEl.textContent = data.error || 'Error al actualizar.';
-                    errorEl.classList.remove('hidden');
-                } else {
-                    successEl.textContent = 'API Key actualizada. Se usará en tu próxima pregunta.';
-                    successEl.classList.remove('hidden');
-                    setTimeout(() => closeSettings(), 2000);
-                }
-            } catch (err) {
-                errorEl.textContent = 'Error de conexión.';
-                errorEl.classList.remove('hidden');
-            }
-        }
+            // Renderizado inteligente
+            let html = `<div>${data.reply}</div>`;
 
-        // ================= Chat y MCP =================
-        async function authFetch(url, options = {}) {
-            options.headers = options.headers || {};
-            options.headers['Authorization'] = 'Bearer ' + getJwt();
-            const res = await fetch(url, options);
-            if (res.status === 401) {
-                logout();
-                throw new Error('Sesión expirada');
-            }
-            return res;
-        }
-
-        async function connectServer() {
-            const url = document.getElementById('urlInput').value.trim();
-            if (!url) return;
-
-            try {
-                const res = await authFetch('/api/mcp/connect', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                const data = await res.json();
-                if (data.error) throw new Error(data.error);
-
-                servers.add(url);
-                renderServers();
-                document.getElementById('urlInput').value = '';
-            } catch (e) { alert("Error: " + e.message); }
-        }
-
-        function renderServers() {
-            const container = document.getElementById('serverList');
-            container.innerHTML = Array.from(servers).map(s => `<span class="badge online">● ${s}</span>`).join('');
-        }
-
-        async function sendChat() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return; // Permitir preguntar sin servers conectados (la IA responderá normalmente)
-
-            appendMessage('user', text);
-            input.value = '';
-
-            const loading = appendMessage('ai', 'Pensando...');
-
-            try {
-                const res = await authFetch('/api/mcp/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await res.json();
-
-                loading.remove();
-
-                if (data.error) {
-                    appendMessage('ai', '❌ Error: ' + data.error);
-                    return;
-                }
-
-                // Renderizado inteligente
-                let html = `<div>${data.reply}</div>`;
-
-                // Verificamos si hay un array de herramientas ejecutadas
-                if (data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
-                    data.toolInfo.forEach(tool => {
-                        html += `
+            // Verificamos si hay un array de herramientas ejecutadas
+            if (data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
+                data.toolInfo.forEach(tool => {
+                    html += `
                         <div class="tool-call">
                             <div class="tool-header">🔧 TOOL_EXECUTION: ${tool.name}</div>
                             <div class="json-block"><b>Input:</b> ${JSON.stringify(tool.arguments)}</div>
                             <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(tool.rawResult)}</div>
                         </div>
                     `;
-                    });
-                } else if (data.toolInfo) {
-                    // Caso legacy: un solo tool
-                    html += `
+                });
+            } else if (data.toolInfo) {
+                // Caso legacy: un solo tool
+                html += `
                     <div class="tool-call">
                         <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
                         <div class="json-block"><b>Input:</b> ${JSON.stringify(data.toolInfo.arguments)}</div>
                         <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(data.toolInfo.rawResult)}</div>
                     </div>
                 `;
-                }
-
-                appendMessage('ai', html, true);
-
-            } catch (e) {
-                loading.remove();
-                appendMessage('ai', 'Error: ' + e.message);
             }
-        }
 
-        function appendMessage(role, content, isHtml = false) {
-            const win = document.getElementById('chat-window');
-            const div = document.createElement('div');
-            div.className = `msg ${role}`;
-            if (isHtml) div.innerHTML = content;
-            else div.textContent = content;
-            win.appendChild(div);
-            win.scrollTop = win.scrollHeight;
-            return div;
-        }
+            appendMessage('ai', html, true);
 
-        // Inicialización
-        window.onload = checkAuth;
-    </script>
+        } catch (e) {
+            loading.remove();
+            appendMessage('ai', 'Error: ' + e.message);
+        }
+    }
+
+    function appendMessage(role, content, isHtml = false) {
+        const win = document.getElementById('chat-window');
+        const div = document.createElement('div');
+        div.className = `msg ${role}`;
+        if (isHtml) div.innerHTML = content;
+        else div.textContent = content;
+        win.appendChild(div);
+        win.scrollTop = win.scrollHeight;
+        return div;
+    }
+
+    // Inicialización
+    window.onload = checkAuth;
+</script>
 </body>
 
 </html>
