@@ -3,7 +3,11 @@ package org.acme.mcp.resource;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.mcp.dto.AuthResponse;
@@ -69,7 +73,7 @@ public class AuthResource {
 
         User user = User.findByUsername(req.username);
         if (user == null || !BCrypt.checkpw(req.password, user.passwordHash)) {
-            return Response.status(401).entity(AuthResponse.error("Credenciales inválidas.")).build();
+            return Response.status(401).entity(AuthResponse.error("Credenciales invalidas.")).build();
         }
 
         String token = jwtService.generateToken(user.id, user.username);
@@ -82,7 +86,7 @@ public class AuthResource {
     @Transactional
     public Response updateKey(UpdateKeyRequest req) {
         if (req.newGeminiKey == null || req.newGeminiKey.trim().isEmpty()) {
-            return Response.status(400).entity(Map.of("error", "Key no válida")).build();
+            return Response.status(400).entity(Map.of("error", "Key no valida")).build();
         }
 
         UUID userId = UUID.fromString(jwt.getSubject());
@@ -93,10 +97,8 @@ public class AuthResource {
 
         user.geminiKeyEnc = encryptionService.encrypt(req.newGeminiKey);
         user.persist();
-
-        // Invalidate model in cache so the next chat request gets the new key
         cache.invalidate(userId);
 
-        return Response.ok(Map.of("message", "API Key actualizada correctamente.")).build();
+        return Response.ok(Map.of("message", "API key actualizada correctamente.")).build();
     }
 }

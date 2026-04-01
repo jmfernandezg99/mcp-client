@@ -576,30 +576,29 @@
             }
 
             // Renderizado inteligente
-            let html = `<div>${data.reply}</div>`;
+            const replyText = typeof data.reply === 'string' && data.reply.trim()
+                ? data.reply
+                : 'No hubo respuesta textual del agente.';
+            let html = `<div>${replyText}</div>`;
 
-            // Verificamos si hay un array de herramientas ejecutadas
-            if (data.toolInfo && Array.isArray(data.toolInfo) && data.toolInfo.length > 0) {
-                data.toolInfo.forEach(tool => {
+            const toolEntries = Array.isArray(data.toolInfo)
+                ? data.toolInfo
+                : (data.toolInfo ? [data.toolInfo] : []);
+
+            toolEntries
+                .filter(tool => tool && (tool.name || tool.arguments || tool.rawResult))
+                .forEach(tool => {
+                    const toolName = tool.name || 'herramienta_sin_nombre';
+                    const toolInput = tool.arguments ?? {};
+                    const toolOutput = tool.rawResult ?? null;
                     html += `
                         <div class="tool-call">
-                            <div class="tool-header">🔧 TOOL_EXECUTION: ${tool.name}</div>
-                            <div class="json-block"><b>Input:</b> ${JSON.stringify(tool.arguments)}</div>
-                            <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(tool.rawResult)}</div>
+                            <div class="tool-header">🔧 TOOL_EXECUTION: ${toolName}</div>
+                            <div class="json-block"><b>Input:</b> ${JSON.stringify(toolInput)}</div>
+                            <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(toolOutput)}</div>
                         </div>
                     `;
                 });
-            } else if (data.toolInfo) {
-                // Caso legacy: un solo tool
-                html += `
-                    <div class="tool-call">
-                        <div class="tool-header">🔧 TOOL_EXECUTION: ${data.toolInfo.name}</div>
-                        <div class="json-block"><b>Input:</b> ${JSON.stringify(data.toolInfo.arguments)}</div>
-                        <div class="json-block" style="color: #10b981"><b>Output:</b> ${JSON.stringify(data.toolInfo.rawResult)}</div>
-                    </div>
-                `;
-            }
-
             appendMessage('ai', html, true);
 
         } catch (e) {

@@ -1,6 +1,6 @@
 package org.acme.mcp.service;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,18 +15,17 @@ public class UserModelCache {
     @Inject
     EncryptionService encryptionService;
 
-    // Cache thread-safe models por usuario
-    private final ConcurrentHashMap<UUID, ChatLanguageModel> cache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, ChatModel> cache = new ConcurrentHashMap<>();
 
-    public ChatLanguageModel getModel(UUID userId) {
+    public ChatModel getModel(UUID userId) {
         return cache.computeIfAbsent(userId, id -> {
             User user = User.findById(id);
             if (user == null) {
                 throw new IllegalStateException("Usuario no encontrado.");
             }
-            
+
             String geminiKey = encryptionService.decrypt(user.geminiKeyEnc);
-            
+
             return GoogleAiGeminiChatModel.builder()
                     .apiKey(geminiKey)
                     .modelName("gemini-2.5-flash")
