@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claudio</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: rgba(15, 23, 42, 0.92);
+            --card-soft: rgba(30, 41, 59, 0.92);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-2: #38bdf8;
+            --danger: #f87171;
+            --border: rgba(148, 163, 184, 0.18);
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #13203f 0%, #0f172a 42%, #020617 100%); color: var(--text); font-family: "Segoe UI", sans-serif; padding: 24px; }
+        .container { max-width: 1080px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 2rem; }
+        .header p { margin: 6px 0 0; color: var(--muted); max-width: 720px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: 0 18px 50px rgba(2, 6, 23, 0.45); margin-bottom: 18px; }
+        .grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+        .stack { display: grid; gap: 18px; }
+        .hidden { display: none !important; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 18px; }
+        .tab, button { border: 1px solid var(--border); border-radius: 10px; background: #0f172a; color: var(--text); padding: 11px 16px; cursor: pointer; font-weight: 600; }
+        .tab.active, button.primary { background: var(--accent); color: #052e16; border-color: transparent; }
+        button.secondary { background: transparent; color: var(--accent-2); border-color: rgba(56, 189, 248, 0.4); }
+        button.danger { color: var(--danger); border-color: rgba(248, 113, 113, 0.4); }
+        button:hover, .tab:hover { opacity: 0.92; }
+        input, textarea { width: 100%; background: #020617; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 12px; outline: none; }
+        input:focus, textarea:focus { border-color: var(--accent-2); }
+        .form-group { display: grid; gap: 6px; margin-bottom: 14px; }
+        .form-group label, .label { color: var(--muted); font-size: 14px; }
+        .toolbar, .inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .server-form { display: grid; grid-template-columns: 1fr 1.8fr auto; gap: 10px; }
+        .server-list, .chat-window { display: grid; gap: 12px; }
+        .server-item, .workspace-row { background: var(--card-soft); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+        .server-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+        .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700; background: rgba(34, 197, 94, 0.14); color: #86efac; }
+        .pill.draft { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+        .pill.failed { background: rgba(248, 113, 113, 0.16); color: #fecaca; }
+        .pill.runtime-off { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+        .pill.runtime-on { background: rgba(34, 197, 94, 0.14); color: #86efac; }
+        .helper { color: var(--muted); font-size: 13px; line-height: 1.5; }
+        .message { padding: 10px 12px; border-radius: 10px; font-size: 14px; }
+        .message.ok { background: rgba(34, 197, 94, 0.12); color: #86efac; }
+        .message.error { background: rgba(248, 113, 113, 0.12); color: #fecaca; }
+        textarea { min-height: 280px; resize: vertical; font-family: Consolas, monospace; font-size: 12px; }
+        .chat-window { min-height: 420px; max-height: 420px; overflow-y: auto; padding-right: 8px; }
+        .msg { max-width: 88%; padding: 12px 14px; border-radius: 14px; line-height: 1.5; }
+        .msg.user { justify-self: end; background: #0369a1; }
+        .msg.ai { background: #1e293b; }
+        .auth-card { max-width: 420px; margin: 48px auto 0; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.82); display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal { width: min(880px, 100%); background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 22px; }
+        .modal h2 { margin-top: 0; }
+        code.inline-code { color: #bae6fd; }
+        @media (max-width: 880px) { body { padding: 14px; } .grid, .server-form { grid-template-columns: 1fr; } .header { flex-direction: column; } .user-info { flex-wrap: wrap; } .msg { max-width: 100%; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Claudio</h1>
+            <p>Control plane multiusuario para preparar y arrancar un <code class="inline-code">workspace-runtime</code> Quarkus que cargue <code class="inline-code">quarkus-langchain4j-mcp</code> de forma declarativa con tu API key y tus servidores MCP.</p>
+        </div>
+        <div id="userInfo" class="user-info hidden">
+            <span id="usernameDisplay">Usuario</span>
+            <button class="secondary" onclick="openSettings()">API Key</button>
+            <button class="danger" onclick="logout()">Cerrar sesion</button>
+        </div>
+    </div>
+
+    <div id="authView" class="card auth-card">
+        <div class="tabs">
+            <div id="tab-login" class="tab active" onclick="switchTab('login')">Login</div>
+            <div id="tab-register" class="tab" onclick="switchTab('register')">Registro</div>
+        </div>
+        <form onsubmit="handleAuth(event)">
+            <div id="authError" class="message error hidden"></div>
+            <div class="form-group"><label>Usuario</label><input id="authUsername" type="text" required></div>
+            <div class="form-group"><label>Contrasena</label><input id="authPassword" type="password" required></div>
+            <div id="geminiGroup" class="form-group hidden"><label>Gemini API Key</label><input id="authGeminiKey" type="password"></div>
+            <button class="primary" type="submit" style="width: 100%;" id="authBtn">Entrar</button>
+        </form>
+    </div>
+
+    <div id="mainView" class="hidden">
+        <div class="grid">
+            <div class="stack">
+                <div class="card">
+                    <div class="toolbar" style="justify-content: space-between; margin-bottom: 14px;">
+                        <div>
+                            <div class="label">Workspace</div>
+                            <div class="helper">Flujo: guarda tus URLs MCP, pulsa <strong>Aplicar</strong> para generar la configuracion declarativa y despues <strong>Arrancar runtime</strong>. El control plane inyecta tu API key automaticamente.</div>
+                        </div>
+                        <div class="inline">
+                            <button class="secondary" onclick="previewWorkspaceConfig()">Vista previa</button>
+                            <button class="primary" onclick="applyWorkspace()">Aplicar</button>
+                            <button class="primary" onclick="startWorkspaceRuntime()">Arrancar runtime</button>
+                            <button class="danger" onclick="stopWorkspaceRuntime()">Parar runtime</button>
+                            <button class="secondary" onclick="showRuntimeLogs()">Ver logs runtime</button>
+                        </div>
+                    </div>
+                    <div id="workspaceStatus" class="workspace-row"></div>
+                    <div id="runtimeMessage" class="message ok hidden" style="margin-top: 12px;"></div>
+                    <div id="runtimeError" class="message error hidden" style="margin-top: 12px;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="label" style="margin-bottom: 12px;">Servidores MCP</div>
+                    <div class="server-form">
+                        <input id="serverNameInput" type="text" placeholder="Nombre">
+                        <input id="urlInput" type="text" placeholder="URL MCP streamable-http">
+                        <button class="primary" type="button" onclick="saveServer()">Guardar</button>
+                    </div>
+                    <div id="serverMessage" class="message ok hidden" style="margin-top: 12px;"></div>
+                    <div id="serverError" class="message error hidden" style="margin-top: 12px;"></div>
+                    <div id="serverList" class="server-list" style="margin-top: 14px;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label" style="margin-bottom: 10px;">Chat del workspace</div>
+                <div class="helper" style="margin-bottom: 12px;">El chat hace proxy hacia tu <code class="inline-code">workspace-runtime</code>. Si el runtime no esta arrancado, el error aparecera aqui.</div>
+                <div id="chatWindow" class="chat-window">
+                    <div class="msg ai">Cuando tu runtime este arriba, este chat usara las tools MCP declarativas cargadas por Quarkus.</div>
+                </div>
+                <div class="inline" style="margin-top: 12px; align-items: stretch;">
+                    <input id="chatInput" type="text" placeholder="Pregunta algo..." onkeypress="if(event.key==='Enter'){sendChat();}">
+                    <button class="primary" type="button" onclick="sendChat()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="configModal" class="modal-overlay hidden">
+    <div class="modal">
+        <h2>Configuracion del workspace runtime</h2>
+        <div id="configMessage" class="message ok hidden"></div>
+        <div id="configError" class="message error hidden"></div>
+        <div class="form-group"><label>Resumen</label><div id="configSummary" class="helper"></div></div>
+        <div class="form-group"><label>Comando generado</label><textarea id="startupCommand" readonly style="min-height: 96px;"></textarea></div>
+        <div class="form-group"><label>Propiedades generadas</label><textarea id="configContent" readonly></textarea></div>
+        <div class="toolbar" style="justify-content: flex-end;"><button class="secondary" onclick="copyStartupCommand()">Copiar comando</button><button class="secondary" onclick="closeConfigModal()">Cerrar</button></div>
+    </div>
+</div>
+
+<div id="logsModal" class="modal-overlay hidden">
+    <div class="modal">
+        <h2>Logs del workspace runtime</h2>
+        <div id="logsError" class="message error hidden"></div>
+        <div class="form-group"><label>Ruta del log</label><div id="logsPath" class="helper"></div></div>
+        <div class="form-group"><label>Ultimas lineas</label><textarea id="logsContent" readonly></textarea></div>
+        <div class="toolbar" style="justify-content: flex-end;"><button class="secondary" onclick="refreshRuntimeLogs()">Refrescar</button><button class="secondary" onclick="closeLogsModal()">Cerrar</button></div>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal" style="width: min(480px, 100%);">
+        <h2>Actualizar API Key</h2>
+        <div id="settingsError" class="message error hidden"></div>
+        <div id="settingsSuccess" class="message ok hidden"></div>
+        <div class="helper" style="margin-bottom: 12px;">La clave se guarda en el control plane y el arranque automatico del runtime la inyecta sin pedirla manualmente.</div>
+        <div class="form-group"><label>Nueva Gemini API Key</label><input id="newGeminiKey" type="password"></div>
+        <div class="toolbar" style="justify-content: flex-end;"><button class="primary" onclick="updateApiKey()">Guardar</button><button class="secondary" onclick="closeSettings()">Cancelar</button></div>
+    </div>
+</div>
+
+<script>
+let currentAuthMode = 'login';
+const servers = new Map();
+let workspace = null;
+
+function getJwt() { return localStorage.getItem('jwt'); }
+function setJwt(token) { localStorage.setItem('jwt', token); }
+function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); } catch (_) { return null; } }
+function escapeHtml(value) { return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;'); }
+function showMessage(id, text, kind) { const el = document.getElementById(id); el.textContent = text; el.className = `message ${kind}`; el.classList.remove('hidden'); }
+function hideMessage(id) { document.getElementById(id).classList.add('hidden'); }
+
+function switchTab(mode) {
+    currentAuthMode = mode;
+    hideMessage('authError');
+    document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+    document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+    document.getElementById('geminiGroup').classList.toggle('hidden', mode !== 'register');
+    document.getElementById('authGeminiKey').required = mode === 'register';
+    document.getElementById('authBtn').textContent = mode === 'register' ? 'Registrarse' : 'Entrar';
+}
+
+async function authFetch(url, options = {}) {
+    const headers = new Headers(options.headers || {});
+    headers.set('Authorization', 'Bearer ' + getJwt());
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (response.status === 401) {
+        logout();
+        throw new Error('Sesion expirada');
+    }
+    return response;
+}
+
+async function checkAuth() {
+    const token = getJwt();
+    if (!token) {
+        logout(false);
+        return false;
+    }
+    const payload = parseJwt(token);
+    if (!payload || payload.exp * 1000 <= Date.now()) {
+        logout(false);
+        return false;
+    }
+    document.getElementById('authView').classList.add('hidden');
+    document.getElementById('mainView').classList.remove('hidden');
+    document.getElementById('userInfo').classList.remove('hidden');
+    document.getElementById('usernameDisplay').textContent = payload.username || 'Usuario';
+    await Promise.all([loadServers(), loadWorkspace()]);
+    return true;
+}
+
+function logout(clearStorage = true) {
+    if (clearStorage) {
+        localStorage.removeItem('jwt');
+    }
+    document.getElementById('authView').classList.remove('hidden');
+    document.getElementById('mainView').classList.add('hidden');
+    document.getElementById('userInfo').classList.add('hidden');
+    document.getElementById('chatWindow').innerHTML = '<div class="msg ai">Cuando tu runtime este arriba, este chat usara las tools MCP declarativas cargadas por Quarkus.</div>';
+    servers.clear();
+    workspace = null;
+    renderServers();
+    renderWorkspace();
+    closeConfigModal();
+    closeLogsModal();
+    closeSettings();
+}
+
+async function handleAuth(event) {
+    event.preventDefault();
+    hideMessage('authError');
+    const username = document.getElementById('authUsername').value.trim();
+    const password = document.getElementById('authPassword').value.trim();
+    const geminiKey = document.getElementById('authGeminiKey').value.trim();
+    const endpoint = currentAuthMode === 'register' ? '/api/auth/register' : '/api/auth/login';
+    const payload = currentAuthMode === 'register' ? { username, password, geminiKey } : { username, password };
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            showMessage('authError', data.error || 'No se pudo autenticar.', 'error');
+            return;
+        }
+        setJwt(data.token);
+        document.getElementById('authPassword').value = '';
+        document.getElementById('authGeminiKey').value = '';
+        await checkAuth();
+    } catch (_) {
+        showMessage('authError', 'Error de conexion con el servidor.', 'error');
+    }
+}
+
+async function loadServers() {
+    const response = await authFetch('/api/mcp/servers');
+    const data = await response.json();
+    servers.clear();
+    for (const server of data) {
+        servers.set(server.id, server);
+    }
+    renderServers();
+}
+
+async function loadWorkspace() {
+    const response = await authFetch('/api/mcp/workspace');
+    workspace = await response.json();
+    renderWorkspace();
+}
+
+function renderServers() {
+    const container = document.getElementById('serverList');
+    if (servers.size === 0) {
+        container.innerHTML = '<div class="helper">Todavia no has guardado ningun servidor MCP.</div>';
+        return;
+    }
+    container.innerHTML = Array.from(servers.values()).map(server => `
+        <div class="server-item">
+            <div class="server-head">
+                <div><strong>${escapeHtml(server.name)}</strong><div class="helper">${escapeHtml(server.url)}</div></div>
+                <button class="danger" onclick="deleteServer('${server.id}')">Eliminar</button>
+            </div>
+        </div>`).join('');
+}
+
+function renderWorkspace() {
+    const container = document.getElementById('workspaceStatus');
+    if (!workspace) {
+        container.innerHTML = '<div class="helper">Cargando workspace...</div>';
+        return;
+    }
+    const statusClass = workspace.status === 'provisioned' ? '' : workspace.status === 'failed' ? 'failed' : 'draft';
+    const statusLabel = workspace.status === 'provisioned' ? 'PROVISIONED' : workspace.status === 'failed' ? 'FAILED' : 'DRAFT';
+    const runtime = workspace.runtime || { running: false };
+    container.innerHTML = `
+        <div class="toolbar" style="justify-content: space-between; align-items: flex-start;">
+            <div>
+                <div><strong>${escapeHtml(workspace.name || 'default')}</strong> <span class="pill ${statusClass}">${statusLabel}</span> <span class="pill ${runtime.running ? 'runtime-on' : 'runtime-off'}">${runtime.running ? 'RUNTIME ON' : 'RUNTIME OFF'}</span></div>
+                <div class="helper">Puerto: ${workspace.runtimePort || 'sin asignar'} � URL runtime: ${escapeHtml(workspace.runtimeUrl || 'todavia no generada')}</div>
+                <div class="helper">Config: ${escapeHtml(workspace.configPath || 'todavia no generada')}</div>
+                ${runtime.logPath ? `<div class="helper">Log: ${escapeHtml(runtime.logPath)}</div>` : ''}
+                ${workspace.lastAppliedAt ? `<div class="helper">Ultimo apply: ${escapeHtml(workspace.lastAppliedAt)}</div>` : ''}
+                ${workspace.lastError ? `<div class="message error" style="margin-top: 10px;">${escapeHtml(workspace.lastError)}</div>` : ''}
+            </div>
+        </div>`;
+}
+
+async function saveServer() {
+    hideMessage('serverMessage');
+    hideMessage('serverError');
+    const name = document.getElementById('serverNameInput').value.trim();
+    const url = document.getElementById('urlInput').value.trim();
+    if (!name || !url) {
+        showMessage('serverError', 'Debes indicar nombre y URL.', 'error');
+        return;
+    }
+    try {
+        const response = await authFetch('/api/mcp/connect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, url })
+        });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo guardar el servidor MCP.');
+        }
+        showMessage('serverMessage', `${data.message} ${data.probe?.message || ''}`.trim(), 'ok');
+        document.getElementById('serverNameInput').value = '';
+        document.getElementById('urlInput').value = '';
+        await Promise.all([loadServers(), loadWorkspace()]);
+    } catch (error) {
+        showMessage('serverError', error.message, 'error');
+    }
+}
+
+async function deleteServer(serverId) {
+    hideMessage('serverMessage');
+    hideMessage('serverError');
+    try {
+        const response = await authFetch(`/api/mcp/servers/${serverId}`, { method: 'DELETE' });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo eliminar el servidor MCP.');
+        }
+        showMessage('serverMessage', 'Servidor eliminado.', 'ok');
+        await Promise.all([loadServers(), loadWorkspace()]);
+    } catch (error) {
+        showMessage('serverError', error.message, 'error');
+    }
+}
+
+async function previewWorkspaceConfig() {
+    try {
+        const response = await authFetch('/api/mcp/workspace/config-preview');
+        openConfigModal(await response.json(), false);
+    } catch (error) {
+        openConfigModal({ error: error.message }, false);
+    }
+}
+
+async function applyWorkspace() {
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
+    try {
+        const response = await authFetch('/api/mcp/workspace/apply', { method: 'POST' });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo aplicar el workspace.');
+        }
+        workspace = data;
+        renderWorkspace();
+        openConfigModal(data, true);
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+        await loadWorkspace();
+    }
+}
+
+async function startWorkspaceRuntime() {
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
+    try {
+        const response = await authFetch('/api/mcp/workspace/start', { method: 'POST' });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo arrancar el runtime.');
+        }
+        showMessage('runtimeMessage', `Runtime arrancando en ${data.runtimeUrl}.`, 'ok');
+        await loadWorkspace();
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+    }
+}
+
+async function stopWorkspaceRuntime() {
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
+    try {
+        const response = await authFetch('/api/mcp/workspace/stop', { method: 'POST' });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo parar el runtime.');
+        }
+        showMessage('runtimeMessage', data.stopped ? 'Runtime detenido.' : (data.message || 'No habia runtime arrancado.'), 'ok');
+        await loadWorkspace();
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+    }
+}
+
+function openConfigModal(data, exported) {
+    document.getElementById('configModal').classList.remove('hidden');
+    hideMessage('configMessage');
+    hideMessage('configError');
+    document.getElementById('configSummary').textContent = data.error ? 'No se pudo generar la configuracion del workspace.' : `Servidores MCP: ${data.serverCount ?? 0} � Runtime: ${data.runtimeUrl || ('http://localhost:' + (data.runtimePort || 8090))}`;
+    document.getElementById('startupCommand').value = data.startupCommand || '';
+    document.getElementById('configContent').value = data.content || '';
+    if (data.error) {
+        showMessage('configError', data.error, 'error');
+    } else if (exported) {
+        showMessage('configMessage', data.nextStep || 'Workspace aplicado.', 'ok');
+    }
+}
+
+function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
+function closeLogsModal() { document.getElementById('logsModal').classList.add('hidden'); }
+
+async function showRuntimeLogs() {
+    document.getElementById('logsModal').classList.remove('hidden');
+    await refreshRuntimeLogs();
+}
+
+async function refreshRuntimeLogs() {
+    hideMessage('logsError');
+    try {
+        const response = await authFetch('/api/mcp/workspace/runtime/logs');
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudieron cargar los logs.');
+        }
+        document.getElementById('logsPath').textContent = data.logPath || 'Sin log disponible';
+        document.getElementById('logsContent').value = data.content || '';
+    } catch (error) {
+        showMessage('logsError', error.message, 'error');
+    }
+}
+
+async function copyStartupCommand() {
+    const command = document.getElementById('startupCommand').value;
+    if (!command) {
+        return;
+    }
+    await navigator.clipboard.writeText(command);
+    showMessage('configMessage', 'Comando copiado al portapapeles.', 'ok');
+}
+
+function appendMessage(role, content) {
+    const windowEl = document.getElementById('chatWindow');
+    const node = document.createElement('div');
+    node.className = `msg ${role}`;
+    node.textContent = content;
+    windowEl.appendChild(node);
+    windowEl.scrollTop = windowEl.scrollHeight;
+    return node;
+}
+
+async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) {
+        return;
+    }
+    input.value = '';
+    appendMessage('user', message);
+    const loading = appendMessage('ai', 'Consultando tu workspace-runtime...');
+    try {
+        const response = await authFetch('/api/mcp/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        loading.remove();
+        appendMessage('ai', data.error ? `Error: ${data.error}` : (data.reply || 'No hubo respuesta textual.'));
+    } catch (error) {
+        loading.remove();
+        appendMessage('ai', 'Error: ' + error.message);
+    }
+}
+
+function openSettings() {
+    document.getElementById('settingsModal').classList.remove('hidden');
+    hideMessage('settingsError');
+    hideMessage('settingsSuccess');
+    document.getElementById('newGeminiKey').value = '';
+}
+
+function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+
+async function updateApiKey() {
+    hideMessage('settingsError');
+    hideMessage('settingsSuccess');
+    const newKey = document.getElementById('newGeminiKey').value.trim();
+    if (!newKey) {
+        showMessage('settingsError', 'La clave no puede estar vacia.', 'error');
+        return;
+    }
+    try {
+        const response = await authFetch('/api/auth/keys', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newGeminiKey: newKey })
+        });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo actualizar la clave.');
+        }
+        showMessage('settingsSuccess', 'API key actualizada. Reaplica el workspace si quieres regenerar su configuracion.', 'ok');
+        setTimeout(closeSettings, 1200);
+    } catch (error) {
+        showMessage('settingsError', error.message, 'error');
+    }
+}
+
+window.onload = () => { checkAuth(); };
+</script>
+</body>
+</html>
