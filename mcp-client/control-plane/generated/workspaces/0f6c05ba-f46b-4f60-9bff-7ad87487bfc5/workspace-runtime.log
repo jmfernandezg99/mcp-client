@@ -1,0 +1,968 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< org.acme:workspace-runtime >---------------------
+[INFO] Building workspace-runtime 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- quarkus:3.32.4:dev (default-cli) @ workspace-runtime ---
+[INFO] Invoking resources:3.3.1:resources (default-resources) @ workspace-runtime
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Invoking quarkus:3.32.4:generate-code (default) @ workspace-runtime
+[INFO] Invoking compiler:3.13.0:compile (default-compile) @ workspace-runtime
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] Invoking resources:3.3.1:testResources (default-testResources) @ workspace-runtime
+[INFO] skip non existing resourceDirectory C:\Users\jmfernandezg\Downloads\mcp-client\mcp-client\workspace-runtime\src\test\resources
+[INFO] Invoking quarkus:3.32.4:generate-code-tests (default) @ workspace-runtime
+[INFO] Invoking compiler:3.13.0:testCompile (default-testCompile) @ workspace-runtime
+[INFO] Nothing to compile - all classes are up to date.
+[WARNING] [io.quarkus.deployment.dev.DevModeCommandLineBuilder] Changed debug port to 54735 because of a port conflict
+Listening for transport dt_socket at address: 54735
+Press [e] to edit command line args (currently ''), [h] for more options>
+Tests paused
+Press [e] to edit command line args (currently ''), [r] to resume testing, [h] for more options>
+Press [e] to edit command line args (currently ''), [r] to resume testing, [o] Toggle test output, [h] for more options>
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-04-09 08:33:09,527 INFO  [io.quarkus] (Quarkus Main Thread) workspace-runtime 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.32.4) started in 4.368s. Listening on: http://localhost:8090
+2026-04-09 08:33:09,527 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-04-09 08:33:09,527 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, langchain4j, langchain4j-ai-gemini, qute, rest, rest-client, rest-client-jackson, rest-jackson, smallrye-context-propagation, vertx]
+2026-04-09 08:33:23,073 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (executor-thread-1) Request: {"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"roots":{"listChanged":true}},"clientInfo":{"name":"langchain4j","version":"1.0"}}}
+2026-04-09 08:33:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-1) Response: {"jsonrpc":"2.0","id":0,"result":{"capabilities":{"logging":{},"tools":{"listChanged":true}},"serverInfo":{"name":"code-with-quarkus","version":"1.0.0-SNAPSHOT","title":"code-with-quarkus"},"protocolVersion":"2025-11-25"}}
+2026-04-09 08:33:23,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (executor-thread-2) Request: {"jsonrpc":"2.0","method":"notifications/initialized"}
+2026-04-09 08:33:23,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-1) Response: 
+2026-04-09 08:33:23,174 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (executor-thread-1) Request: {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+2026-04-09 08:33:23,205 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-1) Response: {"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"getWeather","description":"Obtiene el clima actual de una ciudad usando Open-Meteo.","inputSchema":{"type":"object","properties":{"city":{"type":"string","description":"Nombre de la ciudad a consultar, por ejemplo Madrid o Buenos Aires"}},"required":["city"]}}]}}
+2026-04-09 08:33:23,293 INFO  [dev.langchain4j.http.client.log.LoggingHttpClient] (executor-thread-1) HTTP request:
+- method: POST
+- url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+- headers: [x-goog-api-key: AIzaS...f8], [User-Agent: LangChain4j], [Content-Type: application/json]
+- body: {
+  "contents" : [ {
+    "parts" : [ {
+      "text" : "que tiempo hace en Gandia"
+    } ],
+    "role" : "user"
+  } ],
+  "tools" : {
+    "functionDeclarations" : [ {
+      "name" : "getWeather",
+      "description" : "Obtiene el clima actual de una ciudad usando Open-Meteo.",
+      "parameters" : {
+        "type" : "OBJECT",
+        "properties" : {
+          "city" : {
+            "type" : "STRING",
+            "description" : "Nombre de la ciudad a consultar, por ejemplo Madrid o Buenos Aires"
+          }
+        },
+        "required" : [ "city" ]
+      }
+    } ]
+  },
+  "systemInstruction" : {
+    "parts" : [ {
+      "text" : "Eres un asistente que puede usar herramientas MCP para obtener datos externos. Usa las herramientas cuando necesites informacion del mundo real y responde en espanol de forma concisa."
+    } ],
+    "role" : "model"
+  },
+  "generationConfig" : {
+    "responseMimeType" : "text/plain",
+    "candidateCount" : 1,
+    "maxOutputTokens" : 8192,
+    "thinkingConfig" : {
+      "includeThoughts" : false
+    },
+    "responseLogprobs" : false
+  }
+}
+
+2026-04-09 08:33:24,525 INFO  [dev.langchain4j.http.client.log.LoggingHttpClient] (executor-thread-1) HTTP response:
+- status code: 200
+- headers: [Accept-Ranges: none], [Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000], [Content-Type: application/json; charset=UTF-8], [Date: Thu, 09 Apr 2026 06:33:24 GMT], [Server: scaffolding on HTTPServer2], [Server-Timing: gfet4t7; dur=773], [Transfer-Encoding: chunked], [Vary: [X-Origin, Referer, Origin,Accept-Encoding]], [X-Content-Type-Options: nosniff], [X-Frame-Options: SAMEORIGIN], [X-Gemini-Service-Tier: standard], [X-XSS-Protection: 0]
+- body: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "name": "getWeather",
+              "args": {
+                "city": "Gandia"
+              }
+            },
+            "thoughtSignature": "CtsBAb4+9vtiWb7iK+krFx6Te5qz6WlkgzHQ5WVM8Vxx0kEo+vAf8E0eHGhrLJOHLKJ6XAiR2REYZVupFhrtJTdrDYjl8lLc8iL3wVA7YqmZZOoudtTGt9bWm0tGHp3HOtIoEl+iwtJ7uTzO22I49sk2gqiqQrWag3ErGkHv5I8VaxbhYWMdhtPOU0+g2tEVBl7xV4BFbk0n7WLHa9X+Yh96CwiJXSYzpqwpBrsKlHwEZdLMWMHN0PyCBruCH/lXsyBfE+s9ru7vOx35y3bAUNuSA0qkxEDoqWLqFK9A"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "finishMessage": "Model generated function call(s)."
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 98,
+    "candidatesTokenCount": 15,
+    "totalTokenCount": 160,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 98
+      }
+    ],
+    "thoughtsTokenCount": 47
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "M0jXac-rLvWNxs0Pib-swQU"
+}
+
+
+2026-04-09 08:33:24,576 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (executor-thread-1) Request: {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"getWeather","arguments":{"city":"Gandia"}}}
+2026-04-09 08:33:25,322 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-1) Response: {"jsonrpc":"2.0","id":2,"result":{"isError":false,"content":[{"text":"Clima actual en Gandia, Spain: 13.4 C y 0.0 mm de precipitacion.","type":"text"}]}}
+2026-04-09 08:33:25,327 INFO  [dev.langchain4j.http.client.log.LoggingHttpClient] (executor-thread-1) HTTP request:
+- method: POST
+- url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+- headers: [x-goog-api-key: AIzaS...f8], [User-Agent: LangChain4j], [Content-Type: application/json]
+- body: {
+  "contents" : [ {
+    "parts" : [ {
+      "text" : "que tiempo hace en Gandia"
+    } ],
+    "role" : "user"
+  }, {
+    "parts" : [ {
+      "functionCall" : {
+        "name" : "getWeather",
+        "args" : {
+          "city" : "Gandia"
+        }
+      },
+      "thoughtSignature" : "CtsBAb4+9vtiWb7iK+krFx6Te5qz6WlkgzHQ5WVM8Vxx0kEo+vAf8E0eHGhrLJOHLKJ6XAiR2REYZVupFhrtJTdrDYjl8lLc8iL3wVA7YqmZZOoudtTGt9bWm0tGHp3HOtIoEl+iwtJ7uTzO22I49sk2gqiqQrWag3ErGkHv5I8VaxbhYWMdhtPOU0+g2tEVBl7xV4BFbk0n7WLHa9X+Yh96CwiJXSYzpqwpBrsKlHwEZdLMWMHN0PyCBruCH/lXsyBfE+s9ru7vOx35y3bAUNuSA0qkxEDoqWLqFK9A"
+    } ],
+    "role" : "model"
+  }, {
+    "parts" : [ {
+      "functionResponse" : {
+        "name" : "getWeather",
+        "response" : {
+          "response" : "Clima actual en Gandia, Spain: 13.4 C y 0.0 mm de precipitacion."
+        }
+      }
+    } ],
+    "role" : "user"
+  } ],
+  "tools" : {
+    "functionDeclarations" : [ {
+      "name" : "getWeather",
+      "description" : "Obtiene el clima actual de una ciudad usando Open-Meteo.",
+      "parameters" : {
+        "type" : "OBJECT",
+        "properties" : {
+          "city" : {
+            "type" : "STRING",
+            "description" : "Nombre de la ciudad a consultar, por ejemplo Madrid o Buenos Aires"
+          }
+        },
+        "required" : [ "city" ]
+      }
+    } ]
+  },
+  "systemInstruction" : {
+    "parts" : [ {
+      "text" : "Eres un asistente que puede usar herramientas MCP para obtener datos externos. Usa las herramientas cuando necesites informacion del mundo real y responde en espanol de forma concisa."
+    } ],
+    "role" : "model"
+  },
+  "generationConfig" : {
+    "responseMimeType" : "text/plain",
+    "candidateCount" : 1,
+    "maxOutputTokens" : 8192,
+    "thinkingConfig" : {
+      "includeThoughts" : false
+    },
+    "responseLogprobs" : false
+  }
+}
+
+2026-04-09 08:33:25,841 INFO  [dev.langchain4j.http.client.log.LoggingHttpClient] (executor-thread-1) HTTP response:
+- status code: 200
+- headers: [Accept-Ranges: none], [Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000], [Content-Type: application/json; charset=UTF-8], [Date: Thu, 09 Apr 2026 06:33:25 GMT], [Server: scaffolding on HTTPServer2], [Server-Timing: gfet4t7; dur=497], [Transfer-Encoding: chunked], [Vary: [X-Origin, Referer, Origin,Accept-Encoding]], [X-Content-Type-Options: nosniff], [X-Frame-Options: SAMEORIGIN], [X-Gemini-Service-Tier: standard], [X-XSS-Protection: 0]
+- body: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "El clima actual en Gandia, Espa�a es de 13.4�C y 0.0 mm de precipitaci�n."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 151,
+    "candidatesTokenCount": 27,
+    "totalTokenCount": 178,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 151
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "NUjXae-dFoPlxN8P7YijMQ"
+}
+
+
+2026-04-09 08:33:53,170 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":3,"method":"ping"}
+2026-04-09 08:33:53,178 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":3,"result":{}}
+2026-04-09 08:34:23,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":4,"method":"ping"}
+2026-04-09 08:34:23,175 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":4,"result":{}}
+2026-04-09 08:34:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":5,"method":"ping"}
+2026-04-09 08:34:53,171 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":5,"result":{}}
+2026-04-09 08:35:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":6,"method":"ping"}
+2026-04-09 08:35:23,171 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":6,"result":{}}
+2026-04-09 08:35:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":7,"method":"ping"}
+2026-04-09 08:35:53,169 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":7,"result":{}}
+2026-04-09 08:36:23,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":8,"method":"ping"}
+2026-04-09 08:36:23,173 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":8,"result":{}}
+2026-04-09 08:36:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":9,"method":"ping"}
+2026-04-09 08:36:53,171 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":9,"result":{}}
+2026-04-09 08:37:23,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":10,"method":"ping"}
+2026-04-09 08:37:23,169 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":10,"result":{}}
+2026-04-09 08:37:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":11,"method":"ping"}
+2026-04-09 08:37:53,169 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":11,"result":{}}
+2026-04-09 08:38:23,162 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":12,"method":"ping"}
+2026-04-09 08:38:23,169 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":12,"result":{}}
+2026-04-09 08:38:53,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":13,"method":"ping"}
+2026-04-09 08:38:53,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":13,"result":{}}
+2026-04-09 08:39:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":14,"method":"ping"}
+2026-04-09 08:39:23,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":14,"result":{}}
+2026-04-09 08:39:53,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":15,"method":"ping"}
+2026-04-09 08:39:53,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":15,"result":{}}
+2026-04-09 08:40:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":16,"method":"ping"}
+2026-04-09 08:40:23,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":16,"result":{}}
+2026-04-09 08:40:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":17,"method":"ping"}
+2026-04-09 08:40:53,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":17,"result":{}}
+2026-04-09 08:41:23,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":18,"method":"ping"}
+2026-04-09 08:41:23,170 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":18,"result":{}}
+2026-04-09 08:41:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":19,"method":"ping"}
+2026-04-09 08:41:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":19,"result":{}}
+2026-04-09 08:42:23,162 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":20,"method":"ping"}
+2026-04-09 08:42:23,168 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":20,"result":{}}
+2026-04-09 08:42:53,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":21,"method":"ping"}
+2026-04-09 08:42:53,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":21,"result":{}}
+2026-04-09 08:43:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":22,"method":"ping"}
+2026-04-09 08:43:23,169 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":22,"result":{}}
+2026-04-09 08:43:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":23,"method":"ping"}
+2026-04-09 08:43:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":23,"result":{}}
+2026-04-09 08:44:23,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":24,"method":"ping"}
+2026-04-09 08:44:23,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":24,"result":{}}
+2026-04-09 08:44:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":25,"method":"ping"}
+2026-04-09 08:44:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":25,"result":{}}
+2026-04-09 08:45:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":26,"method":"ping"}
+2026-04-09 08:45:23,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":26,"result":{}}
+2026-04-09 08:45:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":27,"method":"ping"}
+2026-04-09 08:45:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":27,"result":{}}
+2026-04-09 08:46:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":28,"method":"ping"}
+2026-04-09 08:46:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":28,"result":{}}
+2026-04-09 08:46:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":29,"method":"ping"}
+2026-04-09 08:46:53,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":29,"result":{}}
+2026-04-09 08:47:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":30,"method":"ping"}
+2026-04-09 08:47:23,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":30,"result":{}}
+2026-04-09 08:47:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":31,"method":"ping"}
+2026-04-09 08:47:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":31,"result":{}}
+2026-04-09 08:48:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":32,"method":"ping"}
+2026-04-09 08:48:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":32,"result":{}}
+2026-04-09 08:48:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":33,"method":"ping"}
+2026-04-09 08:48:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":33,"result":{}}
+2026-04-09 08:49:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":34,"method":"ping"}
+2026-04-09 08:49:23,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":34,"result":{}}
+2026-04-09 08:49:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":35,"method":"ping"}
+2026-04-09 08:49:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":35,"result":{}}
+2026-04-09 08:50:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":36,"method":"ping"}
+2026-04-09 08:50:23,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":36,"result":{}}
+2026-04-09 08:50:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":37,"method":"ping"}
+2026-04-09 08:50:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":37,"result":{}}
+2026-04-09 08:51:23,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":38,"method":"ping"}
+2026-04-09 08:51:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":38,"result":{}}
+2026-04-09 08:51:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":39,"method":"ping"}
+2026-04-09 08:51:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":39,"result":{}}
+2026-04-09 08:52:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":40,"method":"ping"}
+2026-04-09 08:52:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":40,"result":{}}
+2026-04-09 08:52:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":41,"method":"ping"}
+2026-04-09 08:52:53,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":41,"result":{}}
+2026-04-09 08:53:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":42,"method":"ping"}
+2026-04-09 08:53:23,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":42,"result":{}}
+2026-04-09 08:53:53,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":43,"method":"ping"}
+2026-04-09 08:53:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":43,"result":{}}
+2026-04-09 08:54:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":44,"method":"ping"}
+2026-04-09 08:54:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":44,"result":{}}
+2026-04-09 08:54:53,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":45,"method":"ping"}
+2026-04-09 08:54:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":45,"result":{}}
+2026-04-09 08:55:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":46,"method":"ping"}
+2026-04-09 08:55:23,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":46,"result":{}}
+2026-04-09 08:55:53,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":47,"method":"ping"}
+2026-04-09 08:55:53,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":47,"result":{}}
+2026-04-09 08:56:23,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":48,"method":"ping"}
+2026-04-09 08:56:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":48,"result":{}}
+2026-04-09 08:56:53,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":49,"method":"ping"}
+2026-04-09 08:56:53,166 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":49,"result":{}}
+2026-04-09 08:57:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":50,"method":"ping"}
+2026-04-09 08:57:23,164 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":50,"result":{}}
+2026-04-09 08:57:53,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":51,"method":"ping"}
+2026-04-09 08:57:53,162 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":51,"result":{}}
+2026-04-09 08:58:23,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":52,"method":"ping"}
+2026-04-09 08:58:23,165 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":52,"result":{}}
+2026-04-09 08:58:53,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":53,"method":"ping"}
+2026-04-09 08:58:53,162 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":53,"result":{}}
+2026-04-09 08:59:23,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":54,"method":"ping"}
+2026-04-09 08:59:23,167 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":54,"result":{}}
+2026-04-09 08:59:53,156 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":55,"method":"ping"}
+2026-04-09 08:59:53,162 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":55,"result":{}}
+2026-04-09 09:00:23,155 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":56,"method":"ping"}
+2026-04-09 09:00:23,161 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":56,"result":{}}
+2026-04-09 09:00:53,155 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":57,"method":"ping"}
+2026-04-09 09:00:53,163 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":57,"result":{}}
+2026-04-09 09:01:23,153 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":58,"method":"ping"}
+2026-04-09 09:01:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":58,"result":{}}
+2026-04-09 09:01:53,153 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":59,"method":"ping"}
+2026-04-09 09:01:53,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":59,"result":{}}
+2026-04-09 09:02:23,152 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":60,"method":"ping"}
+2026-04-09 09:02:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":60,"result":{}}
+2026-04-09 09:02:53,152 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":61,"method":"ping"}
+2026-04-09 09:02:53,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":61,"result":{}}
+2026-04-09 09:03:23,152 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":62,"method":"ping"}
+2026-04-09 09:03:23,158 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":62,"result":{}}
+2026-04-09 09:03:53,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":63,"method":"ping"}
+2026-04-09 09:03:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":63,"result":{}}
+2026-04-09 09:04:23,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":64,"method":"ping"}
+2026-04-09 09:04:23,156 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":64,"result":{}}
+2026-04-09 09:04:53,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":65,"method":"ping"}
+2026-04-09 09:04:53,157 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":65,"result":{}}
+2026-04-09 09:05:23,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":66,"method":"ping"}
+2026-04-09 09:05:23,160 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":66,"result":{}}
+2026-04-09 09:05:53,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":67,"method":"ping"}
+2026-04-09 09:05:53,156 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":67,"result":{}}
+2026-04-09 09:06:23,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":68,"method":"ping"}
+2026-04-09 09:06:23,156 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":68,"result":{}}
+2026-04-09 09:06:53,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":69,"method":"ping"}
+2026-04-09 09:06:53,155 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":69,"result":{}}
+2026-04-09 09:07:23,281 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":70,"method":"ping"}
+2026-04-09 09:07:23,372 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":70,"result":{}}
+2026-04-09 09:07:53,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":71,"method":"ping"}
+2026-04-09 09:07:53,155 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":71,"result":{}}
+2026-04-09 09:08:23,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":72,"method":"ping"}
+2026-04-09 09:08:23,154 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":72,"result":{}}
+2026-04-09 09:08:53,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":73,"method":"ping"}
+2026-04-09 09:08:53,155 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":73,"result":{}}
+2026-04-09 09:09:23,148 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":74,"method":"ping"}
+2026-04-09 09:09:23,156 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":74,"result":{}}
+2026-04-09 09:09:53,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":75,"method":"ping"}
+2026-04-09 09:09:53,152 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":75,"result":{}}
+2026-04-09 09:10:23,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":76,"method":"ping"}
+2026-04-09 09:10:23,152 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":76,"result":{}}
+2026-04-09 09:10:53,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":77,"method":"ping"}
+2026-04-09 09:10:53,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":77,"result":{}}
+2026-04-09 09:11:23,144 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":78,"method":"ping"}
+2026-04-09 09:11:23,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":78,"result":{}}
+2026-04-09 09:11:53,144 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":79,"method":"ping"}
+2026-04-09 09:11:53,159 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":79,"result":{}}
+2026-04-09 09:12:23,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":80,"method":"ping"}
+2026-04-09 09:12:23,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":80,"result":{}}
+2026-04-09 09:12:53,144 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":81,"method":"ping"}
+2026-04-09 09:12:53,153 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":81,"result":{}}
+2026-04-09 09:13:23,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":82,"method":"ping"}
+2026-04-09 09:13:23,148 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":82,"result":{}}
+2026-04-09 09:13:53,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":83,"method":"ping"}
+2026-04-09 09:13:53,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":83,"result":{}}
+2026-04-09 09:14:23,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":84,"method":"ping"}
+2026-04-09 09:14:23,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":84,"result":{}}
+2026-04-09 09:14:53,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":85,"method":"ping"}
+2026-04-09 09:14:53,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":85,"result":{}}
+2026-04-09 09:15:23,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":86,"method":"ping"}
+2026-04-09 09:15:23,148 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":86,"result":{}}
+2026-04-09 09:15:53,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":87,"method":"ping"}
+2026-04-09 09:15:53,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":87,"result":{}}
+2026-04-09 09:16:23,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":88,"method":"ping"}
+2026-04-09 09:16:23,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":88,"result":{}}
+2026-04-09 09:16:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":89,"method":"ping"}
+2026-04-09 09:16:53,148 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":89,"result":{}}
+2026-04-09 09:17:23,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":90,"method":"ping"}
+2026-04-09 09:17:23,147 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":90,"result":{}}
+2026-04-09 09:17:53,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":91,"method":"ping"}
+2026-04-09 09:17:53,148 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":91,"result":{}}
+2026-04-09 09:18:23,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":92,"method":"ping"}
+2026-04-09 09:18:23,147 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":92,"result":{}}
+2026-04-09 09:18:53,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":93,"method":"ping"}
+2026-04-09 09:18:53,151 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":93,"result":{}}
+2026-04-09 09:19:23,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":94,"method":"ping"}
+2026-04-09 09:19:23,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":94,"result":{}}
+2026-04-09 09:19:53,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":95,"method":"ping"}
+2026-04-09 09:19:53,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":95,"result":{}}
+2026-04-09 09:20:23,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":96,"method":"ping"}
+2026-04-09 09:20:23,147 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":96,"result":{}}
+2026-04-09 09:20:53,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":97,"method":"ping"}
+2026-04-09 09:20:53,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":97,"result":{}}
+2026-04-09 09:21:23,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":98,"method":"ping"}
+2026-04-09 09:21:23,179 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":98,"result":{}}
+2026-04-09 09:21:53,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":99,"method":"ping"}
+2026-04-09 09:21:53,144 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":99,"result":{}}
+2026-04-09 09:22:23,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":100,"method":"ping"}
+2026-04-09 09:22:23,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":100,"result":{}}
+2026-04-09 09:22:53,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":101,"method":"ping"}
+2026-04-09 09:22:53,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":101,"result":{}}
+2026-04-09 09:23:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":102,"method":"ping"}
+2026-04-09 09:23:23,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":102,"result":{}}
+2026-04-09 09:23:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":103,"method":"ping"}
+2026-04-09 09:23:53,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":103,"result":{}}
+2026-04-09 09:24:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":104,"method":"ping"}
+2026-04-09 09:24:23,144 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":104,"result":{}}
+2026-04-09 09:24:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":105,"method":"ping"}
+2026-04-09 09:24:53,147 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":105,"result":{}}
+2026-04-09 09:25:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":106,"method":"ping"}
+2026-04-09 09:25:23,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":106,"result":{}}
+2026-04-09 09:25:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":107,"method":"ping"}
+2026-04-09 09:25:53,147 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":107,"result":{}}
+2026-04-09 09:26:23,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":108,"method":"ping"}
+2026-04-09 09:26:23,145 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":108,"result":{}}
+2026-04-09 09:26:53,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":109,"method":"ping"}
+2026-04-09 09:26:53,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":109,"result":{}}
+2026-04-09 09:27:23,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":110,"method":"ping"}
+2026-04-09 09:27:23,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":110,"result":{}}
+2026-04-09 09:27:53,136 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":111,"method":"ping"}
+2026-04-09 09:27:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":111,"result":{}}
+2026-04-09 09:28:23,136 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":112,"method":"ping"}
+2026-04-09 09:28:23,143 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":112,"result":{}}
+2026-04-09 09:28:53,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":113,"method":"ping"}
+2026-04-09 09:28:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":113,"result":{}}
+2026-04-09 09:29:23,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":114,"method":"ping"}
+2026-04-09 09:29:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":114,"result":{}}
+2026-04-09 09:29:53,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":115,"method":"ping"}
+2026-04-09 09:29:53,146 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":115,"result":{}}
+2026-04-09 09:30:23,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":116,"method":"ping"}
+2026-04-09 09:30:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":116,"result":{}}
+2026-04-09 09:30:53,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":117,"method":"ping"}
+2026-04-09 09:30:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":117,"result":{}}
+2026-04-09 09:31:23,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":118,"method":"ping"}
+2026-04-09 09:31:23,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":118,"result":{}}
+2026-04-09 09:31:53,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":119,"method":"ping"}
+2026-04-09 09:31:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":119,"result":{}}
+2026-04-09 09:32:23,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":120,"method":"ping"}
+2026-04-09 09:32:23,150 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":120,"result":{}}
+2026-04-09 09:32:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":121,"method":"ping"}
+2026-04-09 09:32:53,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":121,"result":{}}
+2026-04-09 09:33:23,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":122,"method":"ping"}
+2026-04-09 09:33:23,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":122,"result":{}}
+2026-04-09 09:33:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":123,"method":"ping"}
+2026-04-09 09:33:53,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":123,"result":{}}
+2026-04-09 09:34:23,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":124,"method":"ping"}
+2026-04-09 09:34:23,141 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":124,"result":{}}
+2026-04-09 09:34:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":125,"method":"ping"}
+2026-04-09 09:34:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":125,"result":{}}
+2026-04-09 09:35:23,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":126,"method":"ping"}
+2026-04-09 09:35:23,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":126,"result":{}}
+2026-04-09 09:35:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":127,"method":"ping"}
+2026-04-09 09:35:53,149 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":127,"result":{}}
+2026-04-09 09:36:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":128,"method":"ping"}
+2026-04-09 09:36:23,136 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":128,"result":{}}
+2026-04-09 09:36:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":129,"method":"ping"}
+2026-04-09 09:36:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":129,"result":{}}
+2026-04-09 09:37:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":130,"method":"ping"}
+2026-04-09 09:37:23,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":130,"result":{}}
+2026-04-09 09:37:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":131,"method":"ping"}
+2026-04-09 09:37:53,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":131,"result":{}}
+2026-04-09 09:38:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":132,"method":"ping"}
+2026-04-09 09:38:23,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":132,"result":{}}
+2026-04-09 09:38:53,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":133,"method":"ping"}
+2026-04-09 09:38:53,136 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":133,"result":{}}
+2026-04-09 09:39:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":134,"method":"ping"}
+2026-04-09 09:39:23,138 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":134,"result":{}}
+2026-04-09 09:39:53,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":135,"method":"ping"}
+2026-04-09 09:39:53,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":135,"result":{}}
+2026-04-09 09:40:23,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":136,"method":"ping"}
+2026-04-09 09:40:23,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":136,"result":{}}
+2026-04-09 09:40:53,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":137,"method":"ping"}
+2026-04-09 09:40:53,139 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":137,"result":{}}
+2026-04-09 09:41:23,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":138,"method":"ping"}
+2026-04-09 09:41:23,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":138,"result":{}}
+2026-04-09 09:41:53,136 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":139,"method":"ping"}
+2026-04-09 09:41:53,142 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":139,"result":{}}
+2026-04-09 09:42:23,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":140,"method":"ping"}
+2026-04-09 09:42:23,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":140,"result":{}}
+2026-04-09 09:42:53,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":141,"method":"ping"}
+2026-04-09 09:42:53,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":141,"result":{}}
+2026-04-09 09:43:23,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":142,"method":"ping"}
+2026-04-09 09:43:23,137 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":142,"result":{}}
+2026-04-09 09:43:53,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":143,"method":"ping"}
+2026-04-09 09:43:53,135 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":143,"result":{}}
+2026-04-09 09:44:23,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":144,"method":"ping"}
+2026-04-09 09:44:23,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":144,"result":{}}
+2026-04-09 09:44:53,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":145,"method":"ping"}
+2026-04-09 09:44:53,140 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":145,"result":{}}
+2026-04-09 09:45:23,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":146,"method":"ping"}
+2026-04-09 09:45:23,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":146,"result":{}}
+2026-04-09 09:45:53,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":147,"method":"ping"}
+2026-04-09 09:45:53,134 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":147,"result":{}}
+2026-04-09 09:46:23,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":148,"method":"ping"}
+2026-04-09 09:46:23,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":148,"result":{}}
+2026-04-09 09:46:53,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":149,"method":"ping"}
+2026-04-09 09:46:53,133 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":149,"result":{}}
+2026-04-09 09:47:23,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":150,"method":"ping"}
+2026-04-09 09:47:23,129 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":150,"result":{}}
+2026-04-09 09:47:53,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":151,"method":"ping"}
+2026-04-09 09:47:53,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":151,"result":{}}
+2026-04-09 09:48:23,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":152,"method":"ping"}
+2026-04-09 09:48:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":152,"result":{}}
+2026-04-09 09:48:53,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":153,"method":"ping"}
+2026-04-09 09:48:53,129 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":153,"result":{}}
+2026-04-09 09:49:23,123 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":154,"method":"ping"}
+2026-04-09 09:49:23,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":154,"result":{}}
+2026-04-09 09:49:53,123 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":155,"method":"ping"}
+2026-04-09 09:49:53,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":155,"result":{}}
+2026-04-09 09:50:23,123 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":156,"method":"ping"}
+2026-04-09 09:50:23,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":156,"result":{}}
+2026-04-09 09:50:53,123 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":157,"method":"ping"}
+2026-04-09 09:50:53,132 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":157,"result":{}}
+2026-04-09 09:51:23,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":158,"method":"ping"}
+2026-04-09 09:51:23,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":158,"result":{}}
+2026-04-09 09:51:53,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":159,"method":"ping"}
+2026-04-09 09:51:53,131 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":159,"result":{}}
+2026-04-09 09:52:23,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":160,"method":"ping"}
+2026-04-09 09:52:23,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":160,"result":{}}
+2026-04-09 09:52:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":161,"method":"ping"}
+2026-04-09 09:52:53,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":161,"result":{}}
+2026-04-09 09:53:23,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":162,"method":"ping"}
+2026-04-09 09:53:23,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":162,"result":{}}
+2026-04-09 09:53:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":163,"method":"ping"}
+2026-04-09 09:53:53,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":163,"result":{}}
+2026-04-09 09:54:23,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":164,"method":"ping"}
+2026-04-09 09:54:23,128 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":164,"result":{}}
+2026-04-09 09:54:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":165,"method":"ping"}
+2026-04-09 09:54:53,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":165,"result":{}}
+2026-04-09 09:55:23,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":166,"method":"ping"}
+2026-04-09 09:55:23,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":166,"result":{}}
+2026-04-09 09:55:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":167,"method":"ping"}
+2026-04-09 09:55:53,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":167,"result":{}}
+2026-04-09 09:56:23,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":168,"method":"ping"}
+2026-04-09 09:56:23,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":168,"result":{}}
+2026-04-09 09:56:53,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":169,"method":"ping"}
+2026-04-09 09:56:53,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":169,"result":{}}
+2026-04-09 09:57:23,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":170,"method":"ping"}
+2026-04-09 09:57:23,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":170,"result":{}}
+2026-04-09 09:57:53,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":171,"method":"ping"}
+2026-04-09 09:57:53,130 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":171,"result":{}}
+2026-04-09 09:58:23,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":172,"method":"ping"}
+2026-04-09 09:58:23,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":172,"result":{}}
+2026-04-09 09:58:53,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":173,"method":"ping"}
+2026-04-09 09:58:53,127 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":173,"result":{}}
+2026-04-09 09:59:23,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":174,"method":"ping"}
+2026-04-09 09:59:23,125 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":174,"result":{}}
+2026-04-09 09:59:53,119 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":175,"method":"ping"}
+2026-04-09 09:59:53,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":175,"result":{}}
+2026-04-09 10:00:23,119 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":176,"method":"ping"}
+2026-04-09 10:00:23,126 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":176,"result":{}}
+2026-04-09 10:00:53,119 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":177,"method":"ping"}
+2026-04-09 10:00:53,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":177,"result":{}}
+2026-04-09 10:01:23,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":178,"method":"ping"}
+2026-04-09 10:01:23,124 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":178,"result":{}}
+2026-04-09 10:01:53,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":179,"method":"ping"}
+2026-04-09 10:01:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":179,"result":{}}
+2026-04-09 10:02:23,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":180,"method":"ping"}
+2026-04-09 10:02:23,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":180,"result":{}}
+2026-04-09 10:02:53,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":181,"method":"ping"}
+2026-04-09 10:02:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":181,"result":{}}
+2026-04-09 10:03:23,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":182,"method":"ping"}
+2026-04-09 10:03:23,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":182,"result":{}}
+2026-04-09 10:03:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":183,"method":"ping"}
+2026-04-09 10:03:53,122 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":183,"result":{}}
+2026-04-09 10:04:23,115 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":184,"method":"ping"}
+2026-04-09 10:04:23,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":184,"result":{}}
+2026-04-09 10:04:53,115 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":185,"method":"ping"}
+2026-04-09 10:04:53,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":185,"result":{}}
+2026-04-09 10:05:23,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":186,"method":"ping"}
+2026-04-09 10:05:23,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":186,"result":{}}
+2026-04-09 10:05:53,115 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":187,"method":"ping"}
+2026-04-09 10:05:53,121 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":187,"result":{}}
+2026-04-09 10:06:23,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":188,"method":"ping"}
+2026-04-09 10:06:23,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":188,"result":{}}
+2026-04-09 10:06:53,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":189,"method":"ping"}
+2026-04-09 10:06:53,120 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":189,"result":{}}
+2026-04-09 10:07:23,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":190,"method":"ping"}
+2026-04-09 10:07:23,119 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":190,"result":{}}
+2026-04-09 10:07:53,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":191,"method":"ping"}
+2026-04-09 10:07:53,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":191,"result":{}}
+2026-04-09 10:08:23,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":192,"method":"ping"}
+2026-04-09 10:08:23,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":192,"result":{}}
+2026-04-09 10:08:53,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":193,"method":"ping"}
+2026-04-09 10:08:53,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":193,"result":{}}
+2026-04-09 10:09:23,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":194,"method":"ping"}
+2026-04-09 10:09:23,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":194,"result":{}}
+2026-04-09 10:09:53,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":195,"method":"ping"}
+2026-04-09 10:09:53,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":195,"result":{}}
+2026-04-09 10:10:23,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":196,"method":"ping"}
+2026-04-09 10:10:23,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":196,"result":{}}
+2026-04-09 10:10:53,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":197,"method":"ping"}
+2026-04-09 10:10:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":197,"result":{}}
+2026-04-09 10:11:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":198,"method":"ping"}
+2026-04-09 10:11:23,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":198,"result":{}}
+2026-04-09 10:11:53,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":199,"method":"ping"}
+2026-04-09 10:11:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":199,"result":{}}
+2026-04-09 10:12:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":200,"method":"ping"}
+2026-04-09 10:12:23,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":200,"result":{}}
+2026-04-09 10:12:53,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":201,"method":"ping"}
+2026-04-09 10:12:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":201,"result":{}}
+2026-04-09 10:13:23,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":202,"method":"ping"}
+2026-04-09 10:13:23,118 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":202,"result":{}}
+2026-04-09 10:13:53,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":203,"method":"ping"}
+2026-04-09 10:13:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":203,"result":{}}
+2026-04-09 10:14:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":204,"method":"ping"}
+2026-04-09 10:14:23,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":204,"result":{}}
+2026-04-09 10:14:53,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":205,"method":"ping"}
+2026-04-09 10:14:53,116 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":205,"result":{}}
+2026-04-09 10:15:23,110 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":206,"method":"ping"}
+2026-04-09 10:15:23,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":206,"result":{}}
+2026-04-09 10:15:53,110 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":207,"method":"ping"}
+2026-04-09 10:15:53,117 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":207,"result":{}}
+2026-04-09 10:16:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":208,"method":"ping"}
+2026-04-09 10:16:23,115 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":208,"result":{}}
+2026-04-09 10:16:53,110 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":209,"method":"ping"}
+2026-04-09 10:16:53,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":209,"result":{}}
+2026-04-09 10:17:23,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":210,"method":"ping"}
+2026-04-09 10:17:23,115 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":210,"result":{}}
+2026-04-09 10:17:53,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":211,"method":"ping"}
+2026-04-09 10:17:53,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":211,"result":{}}
+2026-04-09 10:18:23,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":212,"method":"ping"}
+2026-04-09 10:18:23,114 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":212,"result":{}}
+2026-04-09 10:18:53,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":213,"method":"ping"}
+2026-04-09 10:18:53,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":213,"result":{}}
+2026-04-09 10:19:23,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":214,"method":"ping"}
+2026-04-09 10:19:23,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":214,"result":{}}
+2026-04-09 10:19:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":215,"method":"ping"}
+2026-04-09 10:19:53,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":215,"result":{}}
+2026-04-09 10:20:23,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":216,"method":"ping"}
+2026-04-09 10:20:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":216,"result":{}}
+2026-04-09 10:20:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":217,"method":"ping"}
+2026-04-09 10:20:53,112 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":217,"result":{}}
+2026-04-09 10:21:23,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":218,"method":"ping"}
+2026-04-09 10:21:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":218,"result":{}}
+2026-04-09 10:21:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":219,"method":"ping"}
+2026-04-09 10:21:53,113 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":219,"result":{}}
+2026-04-09 10:22:23,105 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":220,"method":"ping"}
+2026-04-09 10:22:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":220,"result":{}}
+2026-04-09 10:22:53,105 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":221,"method":"ping"}
+2026-04-09 10:22:53,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":221,"result":{}}
+2026-04-09 10:23:23,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":222,"method":"ping"}
+2026-04-09 10:23:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":222,"result":{}}
+2026-04-09 10:23:53,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":223,"method":"ping"}
+2026-04-09 10:23:53,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":223,"result":{}}
+2026-04-09 10:24:23,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":224,"method":"ping"}
+2026-04-09 10:24:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":224,"result":{}}
+2026-04-09 10:24:53,105 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":225,"method":"ping"}
+2026-04-09 10:24:53,110 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":225,"result":{}}
+2026-04-09 10:25:23,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":226,"method":"ping"}
+2026-04-09 10:25:23,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":226,"result":{}}
+2026-04-09 10:25:53,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":227,"method":"ping"}
+2026-04-09 10:25:53,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":227,"result":{}}
+2026-04-09 10:26:23,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":228,"method":"ping"}
+2026-04-09 10:26:23,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":228,"result":{}}
+2026-04-09 10:26:53,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":229,"method":"ping"}
+2026-04-09 10:26:53,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":229,"result":{}}
+2026-04-09 10:27:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":230,"method":"ping"}
+2026-04-09 10:27:23,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":230,"result":{}}
+2026-04-09 10:27:53,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":231,"method":"ping"}
+2026-04-09 10:27:53,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":231,"result":{}}
+2026-04-09 10:28:23,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":232,"method":"ping"}
+2026-04-09 10:28:23,111 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":232,"result":{}}
+2026-04-09 10:28:53,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":233,"method":"ping"}
+2026-04-09 10:28:53,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":233,"result":{}}
+2026-04-09 10:29:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":234,"method":"ping"}
+2026-04-09 10:29:23,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":234,"result":{}}
+2026-04-09 10:29:53,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":235,"method":"ping"}
+2026-04-09 10:29:53,109 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":235,"result":{}}
+2026-04-09 10:30:23,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":236,"method":"ping"}
+2026-04-09 10:30:23,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":236,"result":{}}
+2026-04-09 10:30:53,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":237,"method":"ping"}
+2026-04-09 10:30:53,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":237,"result":{}}
+2026-04-09 10:31:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":238,"method":"ping"}
+2026-04-09 10:31:23,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":238,"result":{}}
+2026-04-09 10:31:53,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":239,"method":"ping"}
+2026-04-09 10:31:53,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":239,"result":{}}
+2026-04-09 10:32:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":240,"method":"ping"}
+2026-04-09 10:32:23,108 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":240,"result":{}}
+2026-04-09 10:32:53,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":241,"method":"ping"}
+2026-04-09 10:32:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":241,"result":{}}
+2026-04-09 10:33:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":242,"method":"ping"}
+2026-04-09 10:33:23,107 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":242,"result":{}}
+2026-04-09 10:33:53,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":243,"method":"ping"}
+2026-04-09 10:33:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":243,"result":{}}
+2026-04-09 10:34:23,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":244,"method":"ping"}
+2026-04-09 10:34:23,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":244,"result":{}}
+2026-04-09 10:34:53,100 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":245,"method":"ping"}
+2026-04-09 10:34:53,106 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":245,"result":{}}
+2026-04-09 10:35:23,099 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":246,"method":"ping"}
+2026-04-09 10:35:23,105 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":246,"result":{}}
+2026-04-09 10:35:53,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":247,"method":"ping"}
+2026-04-09 10:35:53,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":247,"result":{}}
+2026-04-09 10:36:23,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":248,"method":"ping"}
+2026-04-09 10:36:23,103 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":248,"result":{}}
+2026-04-09 10:36:53,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":249,"method":"ping"}
+2026-04-09 10:36:53,105 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":249,"result":{}}
+2026-04-09 10:37:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":250,"method":"ping"}
+2026-04-09 10:37:23,104 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":250,"result":{}}
+2026-04-09 10:37:53,096 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":251,"method":"ping"}
+2026-04-09 10:37:53,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":251,"result":{}}
+2026-04-09 10:38:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":252,"method":"ping"}
+2026-04-09 10:38:23,102 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":252,"result":{}}
+2026-04-09 10:38:53,096 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":253,"method":"ping"}
+2026-04-09 10:38:53,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":253,"result":{}}
+2026-04-09 10:39:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":254,"method":"ping"}
+2026-04-09 10:39:23,101 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":254,"result":{}}
+2026-04-09 10:39:53,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":255,"method":"ping"}
+2026-04-09 10:39:53,100 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":255,"result":{}}
+2026-04-09 10:40:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":256,"method":"ping"}
+2026-04-09 10:40:23,100 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":256,"result":{}}
+2026-04-09 10:40:53,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":257,"method":"ping"}
+2026-04-09 10:40:53,100 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":257,"result":{}}
+2026-04-09 10:41:23,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":258,"method":"ping"}
+2026-04-09 10:41:23,099 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":258,"result":{}}
+2026-04-09 10:41:53,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":259,"method":"ping"}
+2026-04-09 10:41:53,099 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":259,"result":{}}
+2026-04-09 10:42:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":260,"method":"ping"}
+2026-04-09 10:42:23,100 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":260,"result":{}}
+2026-04-09 10:42:53,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":261,"method":"ping"}
+2026-04-09 10:42:53,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":261,"result":{}}
+2026-04-09 10:43:23,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":262,"method":"ping"}
+2026-04-09 10:43:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":262,"result":{}}
+2026-04-09 10:43:53,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":263,"method":"ping"}
+2026-04-09 10:43:53,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":263,"result":{}}
+2026-04-09 10:44:23,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":264,"method":"ping"}
+2026-04-09 10:44:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":264,"result":{}}
+2026-04-09 10:44:53,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":265,"method":"ping"}
+2026-04-09 10:44:53,098 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":265,"result":{}}
+2026-04-09 10:45:23,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":266,"method":"ping"}
+2026-04-09 10:45:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":266,"result":{}}
+2026-04-09 10:45:53,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":267,"method":"ping"}
+2026-04-09 10:45:53,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":267,"result":{}}
+2026-04-09 10:46:23,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":268,"method":"ping"}
+2026-04-09 10:46:23,096 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":268,"result":{}}
+2026-04-09 10:46:53,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":269,"method":"ping"}
+2026-04-09 10:46:53,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":269,"result":{}}
+2026-04-09 10:47:23,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":270,"method":"ping"}
+2026-04-09 10:47:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":270,"result":{}}
+2026-04-09 10:47:53,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":271,"method":"ping"}
+2026-04-09 10:47:53,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":271,"result":{}}
+2026-04-09 10:48:23,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":272,"method":"ping"}
+2026-04-09 10:48:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":272,"result":{}}
+2026-04-09 10:48:53,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":273,"method":"ping"}
+2026-04-09 10:48:53,096 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":273,"result":{}}
+2026-04-09 10:49:23,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":274,"method":"ping"}
+2026-04-09 10:49:23,097 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":274,"result":{}}
+2026-04-09 10:49:53,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":275,"method":"ping"}
+2026-04-09 10:49:53,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":275,"result":{}}
+2026-04-09 10:50:23,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":276,"method":"ping"}
+2026-04-09 10:50:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":276,"result":{}}
+2026-04-09 10:50:53,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":277,"method":"ping"}
+2026-04-09 10:50:53,096 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":277,"result":{}}
+2026-04-09 10:51:23,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":278,"method":"ping"}
+2026-04-09 10:51:23,095 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":278,"result":{}}
+2026-04-09 10:51:53,090 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":279,"method":"ping"}
+2026-04-09 10:51:53,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":279,"result":{}}
+2026-04-09 10:52:23,090 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":280,"method":"ping"}
+2026-04-09 10:52:23,094 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":280,"result":{}}
+2026-04-09 10:52:53,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":281,"method":"ping"}
+2026-04-09 10:52:53,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":281,"result":{}}
+2026-04-09 10:53:23,088 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":282,"method":"ping"}
+2026-04-09 10:53:23,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":282,"result":{}}
+2026-04-09 10:53:53,088 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":283,"method":"ping"}
+2026-04-09 10:53:53,093 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":283,"result":{}}
+2026-04-09 10:54:23,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":284,"method":"ping"}
+2026-04-09 10:54:23,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":284,"result":{}}
+2026-04-09 10:54:53,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":285,"method":"ping"}
+2026-04-09 10:54:53,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":285,"result":{}}
+2026-04-09 10:55:23,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":286,"method":"ping"}
+2026-04-09 10:55:23,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":286,"result":{}}
+2026-04-09 10:55:53,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":287,"method":"ping"}
+2026-04-09 10:55:53,092 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":287,"result":{}}
+2026-04-09 10:56:23,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":288,"method":"ping"}
+2026-04-09 10:56:23,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":288,"result":{}}
+2026-04-09 10:56:53,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":289,"method":"ping"}
+2026-04-09 10:56:53,090 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":289,"result":{}}
+2026-04-09 10:57:23,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":290,"method":"ping"}
+2026-04-09 10:57:23,091 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":290,"result":{}}
+2026-04-09 10:57:53,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":291,"method":"ping"}
+2026-04-09 10:57:53,090 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":291,"result":{}}
+2026-04-09 10:58:23,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":292,"method":"ping"}
+2026-04-09 10:58:23,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":292,"result":{}}
+2026-04-09 10:58:53,085 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":293,"method":"ping"}
+2026-04-09 10:58:53,090 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":293,"result":{}}
+2026-04-09 10:59:23,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":294,"method":"ping"}
+2026-04-09 10:59:23,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":294,"result":{}}
+2026-04-09 10:59:53,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":295,"method":"ping"}
+2026-04-09 10:59:53,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":295,"result":{}}
+2026-04-09 11:00:23,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":296,"method":"ping"}
+2026-04-09 11:00:23,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":296,"result":{}}
+2026-04-09 11:00:53,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":297,"method":"ping"}
+2026-04-09 11:00:53,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":297,"result":{}}
+2026-04-09 11:01:23,083 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":298,"method":"ping"}
+2026-04-09 11:01:23,088 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":298,"result":{}}
+2026-04-09 11:01:53,084 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":299,"method":"ping"}
+2026-04-09 11:01:53,089 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":299,"result":{}}
+2026-04-09 11:02:23,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":300,"method":"ping"}
+2026-04-09 11:02:23,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":300,"result":{}}
+2026-04-09 11:02:53,083 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":301,"method":"ping"}
+2026-04-09 11:02:53,088 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":301,"result":{}}
+2026-04-09 11:03:23,083 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":302,"method":"ping"}
+2026-04-09 11:03:23,088 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":302,"result":{}}
+2026-04-09 11:03:53,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":303,"method":"ping"}
+2026-04-09 11:03:53,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":303,"result":{}}
+2026-04-09 11:04:23,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":304,"method":"ping"}
+2026-04-09 11:04:23,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":304,"result":{}}
+2026-04-09 11:04:53,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":305,"method":"ping"}
+2026-04-09 11:04:53,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":305,"result":{}}
+2026-04-09 11:05:23,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":306,"method":"ping"}
+2026-04-09 11:05:23,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":306,"result":{}}
+2026-04-09 11:05:53,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":307,"method":"ping"}
+2026-04-09 11:05:53,086 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":307,"result":{}}
+2026-04-09 11:06:23,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":308,"method":"ping"}
+2026-04-09 11:06:23,085 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":308,"result":{}}
+2026-04-09 11:06:53,082 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":309,"method":"ping"}
+2026-04-09 11:06:53,085 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":309,"result":{}}
+2026-04-09 11:07:23,083 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":310,"method":"ping"}
+2026-04-09 11:07:23,087 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":310,"result":{}}
+2026-04-09 11:07:53,081 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":311,"method":"ping"}
+2026-04-09 11:07:53,085 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":311,"result":{}}
+2026-04-09 11:08:23,075 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":312,"method":"ping"}
+2026-04-09 11:08:23,079 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":312,"result":{}}
+2026-04-09 11:08:53,059 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":313,"method":"ping"}
+2026-04-09 11:08:53,063 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":313,"result":{}}
+2026-04-09 11:09:23,047 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":314,"method":"ping"}
+2026-04-09 11:09:23,051 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":314,"result":{}}
+2026-04-09 11:09:53,035 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":315,"method":"ping"}
+2026-04-09 11:09:53,039 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":315,"result":{}}
+2026-04-09 11:10:23,024 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":316,"method":"ping"}
+2026-04-09 11:10:23,029 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":316,"result":{}}
+2026-04-09 11:10:53,015 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":317,"method":"ping"}
+2026-04-09 11:10:53,019 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":317,"result":{}}
+2026-04-09 11:11:23,007 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":318,"method":"ping"}
+2026-04-09 11:11:23,012 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":318,"result":{}}
+2026-04-09 11:11:53,000 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":319,"method":"ping"}
+2026-04-09 11:11:53,005 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":319,"result":{}}
+2026-04-09 11:12:22,994 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":320,"method":"ping"}
+2026-04-09 11:12:22,999 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":320,"result":{}}
+2026-04-09 11:12:52,987 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":321,"method":"ping"}
+2026-04-09 11:12:52,991 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":321,"result":{}}
+2026-04-09 11:13:22,981 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":322,"method":"ping"}
+2026-04-09 11:13:22,985 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":322,"result":{}}
+2026-04-09 11:13:52,977 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":323,"method":"ping"}
+2026-04-09 11:13:52,981 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":323,"result":{}}
+2026-04-09 11:14:22,973 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":324,"method":"ping"}
+2026-04-09 11:14:22,977 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":324,"result":{}}
+2026-04-09 11:14:52,969 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":325,"method":"ping"}
+2026-04-09 11:14:52,974 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":325,"result":{}}
+2026-04-09 11:15:22,967 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":326,"method":"ping"}
+2026-04-09 11:15:22,971 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":326,"result":{}}
+2026-04-09 11:15:52,963 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":327,"method":"ping"}
+2026-04-09 11:15:52,968 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":327,"result":{}}
+2026-04-09 11:16:22,961 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":328,"method":"ping"}
+2026-04-09 11:16:22,966 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":328,"result":{}}
+2026-04-09 11:16:52,958 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":329,"method":"ping"}
+2026-04-09 11:16:52,962 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":329,"result":{}}
+2026-04-09 11:17:22,955 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":330,"method":"ping"}
+2026-04-09 11:17:22,960 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":330,"result":{}}
+2026-04-09 11:17:52,954 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":331,"method":"ping"}
+2026-04-09 11:17:52,957 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":331,"result":{}}
+2026-04-09 11:18:22,952 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":332,"method":"ping"}
+2026-04-09 11:18:22,955 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":332,"result":{}}
+2026-04-09 11:18:52,950 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":333,"method":"ping"}
+2026-04-09 11:18:52,955 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":333,"result":{}}
+2026-04-09 11:19:22,949 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":334,"method":"ping"}
+2026-04-09 11:19:22,954 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":334,"result":{}}
+2026-04-09 11:19:52,948 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":335,"method":"ping"}
+2026-04-09 11:19:52,952 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":335,"result":{}}
+2026-04-09 11:20:22,947 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":336,"method":"ping"}
+2026-04-09 11:20:22,952 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":336,"result":{}}
+2026-04-09 11:20:52,945 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":337,"method":"ping"}
+2026-04-09 11:20:52,949 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":337,"result":{}}
+2026-04-09 11:21:22,945 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":338,"method":"ping"}
+2026-04-09 11:21:22,949 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":338,"result":{}}
+2026-04-09 11:21:52,944 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":339,"method":"ping"}
+2026-04-09 11:21:52,948 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":339,"result":{}}
+2026-04-09 11:22:22,943 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":340,"method":"ping"}
+2026-04-09 11:22:22,948 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":340,"result":{}}
+2026-04-09 11:22:52,942 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":341,"method":"ping"}
+2026-04-09 11:22:52,945 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":341,"result":{}}
+2026-04-09 11:23:22,942 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":342,"method":"ping"}
+2026-04-09 11:23:22,946 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":342,"result":{}}
+2026-04-09 11:23:52,942 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":343,"method":"ping"}
+2026-04-09 11:23:52,946 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":343,"result":{}}
+2026-04-09 11:24:22,940 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":344,"method":"ping"}
+2026-04-09 11:24:22,944 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":344,"result":{}}
+2026-04-09 11:24:52,940 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":345,"method":"ping"}
+2026-04-09 11:24:52,945 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":345,"result":{}}
+2026-04-09 11:25:22,944 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":346,"method":"ping"}
+2026-04-09 11:25:22,949 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":346,"result":{}}
+2026-04-09 11:25:52,958 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":347,"method":"ping"}
+2026-04-09 11:25:52,963 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":347,"result":{}}
+2026-04-09 11:26:22,970 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":348,"method":"ping"}
+2026-04-09 11:26:22,974 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":348,"result":{}}
+2026-04-09 11:26:52,981 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":349,"method":"ping"}
+2026-04-09 11:26:52,986 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":349,"result":{}}
+2026-04-09 11:27:22,991 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":350,"method":"ping"}
+2026-04-09 11:27:22,995 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":350,"result":{}}
+2026-04-09 11:27:53,001 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":351,"method":"ping"}
+2026-04-09 11:27:53,005 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":351,"result":{}}
+2026-04-09 11:28:23,008 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":352,"method":"ping"}
+2026-04-09 11:28:23,013 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":352,"result":{}}
+2026-04-09 11:28:53,015 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":353,"method":"ping"}
+2026-04-09 11:28:53,019 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":353,"result":{}}
+2026-04-09 11:29:23,021 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":354,"method":"ping"}
+2026-04-09 11:29:23,024 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":354,"result":{}}
+2026-04-09 11:29:53,027 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":355,"method":"ping"}
+2026-04-09 11:29:53,032 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":355,"result":{}}
+2026-04-09 11:30:23,031 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":356,"method":"ping"}
+2026-04-09 11:30:23,035 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":356,"result":{}}
+2026-04-09 11:30:53,035 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":357,"method":"ping"}
+2026-04-09 11:30:53,039 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":357,"result":{}}
+2026-04-09 11:31:23,041 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":358,"method":"ping"}
+2026-04-09 11:31:23,046 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":358,"result":{}}
+2026-04-09 11:31:53,044 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":359,"method":"ping"}
+2026-04-09 11:31:53,048 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":359,"result":{}}
+2026-04-09 11:32:23,047 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":360,"method":"ping"}
+2026-04-09 11:32:23,051 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":360,"result":{}}
+2026-04-09 11:32:53,049 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":361,"method":"ping"}
+2026-04-09 11:32:53,054 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":361,"result":{}}
+2026-04-09 11:33:23,051 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":362,"method":"ping"}
+2026-04-09 11:33:23,056 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":362,"result":{}}
+2026-04-09 11:33:53,052 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":363,"method":"ping"}
+2026-04-09 11:33:53,057 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":363,"result":{}}
+2026-04-09 11:34:23,054 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":364,"method":"ping"}
+2026-04-09 11:34:23,060 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":364,"result":{}}
+2026-04-09 11:34:53,057 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":365,"method":"ping"}
+2026-04-09 11:34:53,062 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":365,"result":{}}
+2026-04-09 11:35:23,058 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":366,"method":"ping"}
+2026-04-09 11:35:23,062 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":366,"result":{}}
+2026-04-09 11:35:53,059 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":367,"method":"ping"}
+2026-04-09 11:35:53,064 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":367,"result":{}}
+2026-04-09 11:36:23,060 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":368,"method":"ping"}
+2026-04-09 11:36:23,066 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":368,"result":{}}
+2026-04-09 11:36:53,061 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":369,"method":"ping"}
+2026-04-09 11:36:53,067 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":369,"result":{}}
+2026-04-09 11:37:23,063 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":370,"method":"ping"}
+2026-04-09 11:37:23,068 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":370,"result":{}}
+2026-04-09 11:37:53,064 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":371,"method":"ping"}
+2026-04-09 11:37:53,073 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":371,"result":{}}
+2026-04-09 11:38:23,064 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":372,"method":"ping"}
+2026-04-09 11:38:23,068 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":372,"result":{}}
+2026-04-09 11:38:53,064 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":373,"method":"ping"}
+2026-04-09 11:38:53,068 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":373,"result":{}}
+2026-04-09 11:39:23,064 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (mcp-server-health-checker) Request: {"jsonrpc":"2.0","id":374,"method":"ping"}
+2026-04-09 11:39:23,068 INFO  [io.quarkiverse.langchain4j.mcp.runtime.http.QuarkusStreamableHttpMcpTransport] (vert.x-eventloop-thread-5) Response: {"jsonrpc":"2.0","id":374,"result":{}}
