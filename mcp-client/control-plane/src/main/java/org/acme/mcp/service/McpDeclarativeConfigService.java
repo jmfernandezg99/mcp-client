@@ -58,8 +58,8 @@ public class McpDeclarativeConfigService {
             String clientName = uniqueClientName(sanitize(server.name), usedNames);
             builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".transport-type=streamable-http\n");
             builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".url=").append(server.url).append("\n");
-            builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".log-requests=false\n");
-            builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".log-responses=false\n\n");
+            builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".log-requests=true\n");
+            builder.append("quarkus.langchain4j.mcp.").append(clientName).append(".log-responses=true\n\n");
         }
 
         if (servers.isEmpty()) {

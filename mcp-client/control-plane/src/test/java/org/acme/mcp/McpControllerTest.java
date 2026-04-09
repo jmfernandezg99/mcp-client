@@ -90,6 +90,17 @@ class McpControllerTest {
     }
 
     @Test
+    void readsRuntimeLogs() throws Exception {
+        TestWorkspaceRuntimeLauncherService launcherService = new TestWorkspaceRuntimeLauncherService();
+        McpController controller = controller(new TestMcpServerConfigService(), new TestMcpServerProbeService(true), new TestWorkspaceService(), new TestWorkspaceProvisionService(), launcherService, new TestWorkspaceChatProxyService());
+
+        Object response = controller.runtimeLogs();
+        Map<String, Object> body = assertInstanceOf(Map.class, response);
+
+        assertTrue(String.valueOf(body.get("content")).contains("toolExecutionRequested"));
+    }
+
+    @Test
     void chatDelegatesToWorkspaceProxy() throws Exception {
         TestWorkspaceChatProxyService chatProxyService = new TestWorkspaceChatProxyService();
         McpController controller = controller(new TestMcpServerConfigService(), new TestMcpServerProbeService(true), new TestWorkspaceService(), new TestWorkspaceProvisionService(), new TestWorkspaceRuntimeLauncherService(), chatProxyService);
@@ -229,6 +240,11 @@ class McpControllerTest {
         @Override
         public Map<String, Object> status(UUID userId) {
             return Map.of("running", false, "runtimeUrl", "http://localhost:8090", "workspaceStatus", "draft");
+        }
+
+        @Override
+        public Map<String, Object> readLogTail(UUID userId) {
+            return Map.of("content", "toolExecutionRequested weather.getCurrentWeather", "logPath", "C:/tmp/workspace-runtime.log", "runtimeRunning", true);
         }
     }
 

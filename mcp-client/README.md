@@ -40,6 +40,8 @@ Se aprovecha Quarkus y `quarkus-langchain4j-mcp` donde mejor encajan:
 .\mvnw.cmd -pl control-plane quarkus:dev
 ```
 
+En desarrollo, `control-plane` usa H2 embebida y no necesita Docker. Para produccion o para usar una base externa, define `DB_URL`, `DB_USER` y `DB_PASS` en `control-plane/.env`.
+
 ### Workspace runtime
 
 No hace falta pasar la API key a mano. El propio `control-plane` puede arrancarlo desde la UI con el boton `Arrancar runtime`.

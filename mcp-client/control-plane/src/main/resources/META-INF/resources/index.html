@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claudio Control Plane</title>
+    <title>Claudio</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -106,6 +106,7 @@
                             <button class="primary" onclick="applyWorkspace()">Aplicar</button>
                             <button class="primary" onclick="startWorkspaceRuntime()">Arrancar runtime</button>
                             <button class="danger" onclick="stopWorkspaceRuntime()">Parar runtime</button>
+                            <button class="secondary" onclick="showRuntimeLogs()">Ver logs runtime</button>
                         </div>
                     </div>
                     <div id="workspaceStatus" class="workspace-row"></div>
@@ -128,7 +129,7 @@
 
             <div class="card">
                 <div class="label" style="margin-bottom: 10px;">Chat del workspace</div>
-                <div class="helper" style="margin-bottom: 12px;">El chat hace proxy hacia tu <code class="inline-code">workspace-runtime</code>. Si el runtime no esta arrancado, el error aparecerá aqui.</div>
+                <div class="helper" style="margin-bottom: 12px;">El chat hace proxy hacia tu <code class="inline-code">workspace-runtime</code>. Si el runtime no esta arrancado, el error aparecera aqui.</div>
                 <div id="chatWindow" class="chat-window">
                     <div class="msg ai">Cuando tu runtime este arriba, este chat usara las tools MCP declarativas cargadas por Quarkus.</div>
                 </div>
@@ -150,6 +151,16 @@
         <div class="form-group"><label>Comando generado</label><textarea id="startupCommand" readonly style="min-height: 96px;"></textarea></div>
         <div class="form-group"><label>Propiedades generadas</label><textarea id="configContent" readonly></textarea></div>
         <div class="toolbar" style="justify-content: flex-end;"><button class="secondary" onclick="copyStartupCommand()">Copiar comando</button><button class="secondary" onclick="closeConfigModal()">Cerrar</button></div>
+    </div>
+</div>
+
+<div id="logsModal" class="modal-overlay hidden">
+    <div class="modal">
+        <h2>Logs del workspace runtime</h2>
+        <div id="logsError" class="message error hidden"></div>
+        <div class="form-group"><label>Ruta del log</label><div id="logsPath" class="helper"></div></div>
+        <div class="form-group"><label>Ultimas lineas</label><textarea id="logsContent" readonly></textarea></div>
+        <div class="toolbar" style="justify-content: flex-end;"><button class="secondary" onclick="refreshRuntimeLogs()">Refrescar</button><button class="secondary" onclick="closeLogsModal()">Cerrar</button></div>
     </div>
 </div>
 
@@ -175,6 +186,7 @@ function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); }
 function escapeHtml(value) { return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;'); }
 function showMessage(id, text, kind) { const el = document.getElementById(id); el.textContent = text; el.className = `message ${kind}`; el.classList.remove('hidden'); }
 function hideMessage(id) { document.getElementById(id).classList.add('hidden'); }
+
 function switchTab(mode) {
     currentAuthMode = mode;
     hideMessage('authError');
@@ -184,19 +196,30 @@ function switchTab(mode) {
     document.getElementById('authGeminiKey').required = mode === 'register';
     document.getElementById('authBtn').textContent = mode === 'register' ? 'Registrarse' : 'Entrar';
 }
+
 async function authFetch(url, options = {}) {
     const headers = new Headers(options.headers || {});
     headers.set('Authorization', 'Bearer ' + getJwt());
     options.headers = headers;
     const response = await fetch(url, options);
-    if (response.status === 401) { logout(); throw new Error('Sesion expirada'); }
+    if (response.status === 401) {
+        logout();
+        throw new Error('Sesion expirada');
+    }
     return response;
 }
+
 async function checkAuth() {
     const token = getJwt();
-    if (!token) { logout(false); return false; }
+    if (!token) {
+        logout(false);
+        return false;
+    }
     const payload = parseJwt(token);
-    if (!payload || payload.exp * 1000 <= Date.now()) { logout(false); return false; }
+    if (!payload || payload.exp * 1000 <= Date.now()) {
+        logout(false);
+        return false;
+    }
     document.getElementById('authView').classList.add('hidden');
     document.getElementById('mainView').classList.remove('hidden');
     document.getElementById('userInfo').classList.remove('hidden');
@@ -204,14 +227,24 @@ async function checkAuth() {
     await Promise.all([loadServers(), loadWorkspace()]);
     return true;
 }
+
 function logout(clearStorage = true) {
-    if (clearStorage) localStorage.removeItem('jwt');
+    if (clearStorage) {
+        localStorage.removeItem('jwt');
+    }
     document.getElementById('authView').classList.remove('hidden');
     document.getElementById('mainView').classList.add('hidden');
     document.getElementById('userInfo').classList.add('hidden');
     document.getElementById('chatWindow').innerHTML = '<div class="msg ai">Cuando tu runtime este arriba, este chat usara las tools MCP declarativas cargadas por Quarkus.</div>';
-    servers.clear(); workspace = null; renderServers(); renderWorkspace(); closeConfigModal(); closeSettings();
+    servers.clear();
+    workspace = null;
+    renderServers();
+    renderWorkspace();
+    closeConfigModal();
+    closeLogsModal();
+    closeSettings();
 }
+
 async function handleAuth(event) {
     event.preventDefault();
     hideMessage('authError');
@@ -221,30 +254,47 @@ async function handleAuth(event) {
     const endpoint = currentAuthMode === 'register' ? '/api/auth/register' : '/api/auth/login';
     const payload = currentAuthMode === 'register' ? { username, password, geminiKey } : { username, password };
     try {
-        const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
         const data = await response.json();
-        if (!response.ok || data.error) { showMessage('authError', data.error || 'No se pudo autenticar.', 'error'); return; }
+        if (!response.ok || data.error) {
+            showMessage('authError', data.error || 'No se pudo autenticar.', 'error');
+            return;
+        }
         setJwt(data.token);
         document.getElementById('authPassword').value = '';
         document.getElementById('authGeminiKey').value = '';
         await checkAuth();
-    } catch (_) { showMessage('authError', 'Error de conexion con el servidor.', 'error'); }
+    } catch (_) {
+        showMessage('authError', 'Error de conexion con el servidor.', 'error');
+    }
 }
+
 async function loadServers() {
     const response = await authFetch('/api/mcp/servers');
     const data = await response.json();
     servers.clear();
-    for (const server of data) servers.set(server.id, server);
+    for (const server of data) {
+        servers.set(server.id, server);
+    }
     renderServers();
 }
+
 async function loadWorkspace() {
     const response = await authFetch('/api/mcp/workspace');
     workspace = await response.json();
     renderWorkspace();
 }
+
 function renderServers() {
     const container = document.getElementById('serverList');
-    if (servers.size === 0) { container.innerHTML = '<div class="helper">Todavia no has guardado ningun servidor MCP.</div>'; return; }
+    if (servers.size === 0) {
+        container.innerHTML = '<div class="helper">Todavia no has guardado ningun servidor MCP.</div>';
+        return;
+    }
     container.innerHTML = Array.from(servers.values()).map(server => `
         <div class="server-item">
             <div class="server-head">
@@ -253,9 +303,13 @@ function renderServers() {
             </div>
         </div>`).join('');
 }
+
 function renderWorkspace() {
     const container = document.getElementById('workspaceStatus');
-    if (!workspace) { container.innerHTML = '<div class="helper">Cargando workspace...</div>'; return; }
+    if (!workspace) {
+        container.innerHTML = '<div class="helper">Cargando workspace...</div>';
+        return;
+    }
     const statusClass = workspace.status === 'provisioned' ? '' : workspace.status === 'failed' ? 'failed' : 'draft';
     const statusLabel = workspace.status === 'provisioned' ? 'PROVISIONED' : workspace.status === 'failed' ? 'FAILED' : 'DRAFT';
     const runtime = workspace.runtime || { running: false };
@@ -263,7 +317,7 @@ function renderWorkspace() {
         <div class="toolbar" style="justify-content: space-between; align-items: flex-start;">
             <div>
                 <div><strong>${escapeHtml(workspace.name || 'default')}</strong> <span class="pill ${statusClass}">${statusLabel}</span> <span class="pill ${runtime.running ? 'runtime-on' : 'runtime-off'}">${runtime.running ? 'RUNTIME ON' : 'RUNTIME OFF'}</span></div>
-                <div class="helper">Puerto: ${workspace.runtimePort || 'sin asignar'} · URL runtime: ${escapeHtml(workspace.runtimeUrl || 'todavia no generada')}</div>
+                <div class="helper">Puerto: ${workspace.runtimePort || 'sin asignar'} ï¿½ URL runtime: ${escapeHtml(workspace.runtimeUrl || 'todavia no generada')}</div>
                 <div class="helper">Config: ${escapeHtml(workspace.configPath || 'todavia no generada')}</div>
                 ${runtime.logPath ? `<div class="helper">Log: ${escapeHtml(runtime.logPath)}</div>` : ''}
                 ${workspace.lastAppliedAt ? `<div class="helper">Ultimo apply: ${escapeHtml(workspace.lastAppliedAt)}</div>` : ''}
@@ -271,104 +325,224 @@ function renderWorkspace() {
             </div>
         </div>`;
 }
+
 async function saveServer() {
-    hideMessage('serverMessage'); hideMessage('serverError');
+    hideMessage('serverMessage');
+    hideMessage('serverError');
     const name = document.getElementById('serverNameInput').value.trim();
     const url = document.getElementById('urlInput').value.trim();
-    if (!name || !url) { showMessage('serverError', 'Debes indicar nombre y URL.', 'error'); return; }
+    if (!name || !url) {
+        showMessage('serverError', 'Debes indicar nombre y URL.', 'error');
+        return;
+    }
     try {
-        const response = await authFetch('/api/mcp/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, url }) });
+        const response = await authFetch('/api/mcp/connect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, url })
+        });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo guardar el servidor MCP.');
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo guardar el servidor MCP.');
+        }
         showMessage('serverMessage', `${data.message} ${data.probe?.message || ''}`.trim(), 'ok');
-        document.getElementById('serverNameInput').value = ''; document.getElementById('urlInput').value = '';
+        document.getElementById('serverNameInput').value = '';
+        document.getElementById('urlInput').value = '';
         await Promise.all([loadServers(), loadWorkspace()]);
-    } catch (error) { showMessage('serverError', error.message, 'error'); }
+    } catch (error) {
+        showMessage('serverError', error.message, 'error');
+    }
 }
+
 async function deleteServer(serverId) {
-    hideMessage('serverMessage'); hideMessage('serverError');
+    hideMessage('serverMessage');
+    hideMessage('serverError');
     try {
         const response = await authFetch(`/api/mcp/servers/${serverId}`, { method: 'DELETE' });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo eliminar el servidor MCP.');
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo eliminar el servidor MCP.');
+        }
         showMessage('serverMessage', 'Servidor eliminado.', 'ok');
         await Promise.all([loadServers(), loadWorkspace()]);
-    } catch (error) { showMessage('serverError', error.message, 'error'); }
+    } catch (error) {
+        showMessage('serverError', error.message, 'error');
+    }
 }
+
 async function previewWorkspaceConfig() {
     try {
         const response = await authFetch('/api/mcp/workspace/config-preview');
         openConfigModal(await response.json(), false);
-    } catch (error) { openConfigModal({ error: error.message }, false); }
+    } catch (error) {
+        openConfigModal({ error: error.message }, false);
+    }
 }
+
 async function applyWorkspace() {
-    hideMessage('runtimeMessage'); hideMessage('runtimeError');
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
     try {
         const response = await authFetch('/api/mcp/workspace/apply', { method: 'POST' });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo aplicar el workspace.');
-        workspace = data; renderWorkspace(); openConfigModal(data, true);
-    } catch (error) { showMessage('runtimeError', error.message, 'error'); await loadWorkspace(); }
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo aplicar el workspace.');
+        }
+        workspace = data;
+        renderWorkspace();
+        openConfigModal(data, true);
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+        await loadWorkspace();
+    }
 }
+
 async function startWorkspaceRuntime() {
-    hideMessage('runtimeMessage'); hideMessage('runtimeError');
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
     try {
         const response = await authFetch('/api/mcp/workspace/start', { method: 'POST' });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo arrancar el runtime.');
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo arrancar el runtime.');
+        }
         showMessage('runtimeMessage', `Runtime arrancando en ${data.runtimeUrl}.`, 'ok');
         await loadWorkspace();
-    } catch (error) { showMessage('runtimeError', error.message, 'error'); }
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+    }
 }
+
 async function stopWorkspaceRuntime() {
-    hideMessage('runtimeMessage'); hideMessage('runtimeError');
+    hideMessage('runtimeMessage');
+    hideMessage('runtimeError');
     try {
         const response = await authFetch('/api/mcp/workspace/stop', { method: 'POST' });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo parar el runtime.');
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo parar el runtime.');
+        }
         showMessage('runtimeMessage', data.stopped ? 'Runtime detenido.' : (data.message || 'No habia runtime arrancado.'), 'ok');
         await loadWorkspace();
-    } catch (error) { showMessage('runtimeError', error.message, 'error'); }
+    } catch (error) {
+        showMessage('runtimeError', error.message, 'error');
+    }
 }
+
 function openConfigModal(data, exported) {
     document.getElementById('configModal').classList.remove('hidden');
-    hideMessage('configMessage'); hideMessage('configError');
-    document.getElementById('configSummary').textContent = data.error ? 'No se pudo generar la configuracion del workspace.' : `Servidores MCP: ${data.serverCount ?? 0} · Runtime: ${data.runtimeUrl || ('http://localhost:' + (data.runtimePort || 8090))}`;
+    hideMessage('configMessage');
+    hideMessage('configError');
+    document.getElementById('configSummary').textContent = data.error ? 'No se pudo generar la configuracion del workspace.' : `Servidores MCP: ${data.serverCount ?? 0} ï¿½ Runtime: ${data.runtimeUrl || ('http://localhost:' + (data.runtimePort || 8090))}`;
     document.getElementById('startupCommand').value = data.startupCommand || '';
     document.getElementById('configContent').value = data.content || '';
-    if (data.error) showMessage('configError', data.error, 'error'); else if (exported) showMessage('configMessage', data.nextStep || 'Workspace aplicado.', 'ok');
+    if (data.error) {
+        showMessage('configError', data.error, 'error');
+    } else if (exported) {
+        showMessage('configMessage', data.nextStep || 'Workspace aplicado.', 'ok');
+    }
 }
+
 function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
-async function copyStartupCommand() { const command = document.getElementById('startupCommand').value; if (!command) return; await navigator.clipboard.writeText(command); showMessage('configMessage', 'Comando copiado al portapapeles.', 'ok'); }
-function appendMessage(role, content) { const windowEl = document.getElementById('chatWindow'); const node = document.createElement('div'); node.className = `msg ${role}`; node.textContent = content; windowEl.appendChild(node); windowEl.scrollTop = windowEl.scrollHeight; return node; }
+function closeLogsModal() { document.getElementById('logsModal').classList.add('hidden'); }
+
+async function showRuntimeLogs() {
+    document.getElementById('logsModal').classList.remove('hidden');
+    await refreshRuntimeLogs();
+}
+
+async function refreshRuntimeLogs() {
+    hideMessage('logsError');
+    try {
+        const response = await authFetch('/api/mcp/workspace/runtime/logs');
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudieron cargar los logs.');
+        }
+        document.getElementById('logsPath').textContent = data.logPath || 'Sin log disponible';
+        document.getElementById('logsContent').value = data.content || '';
+    } catch (error) {
+        showMessage('logsError', error.message, 'error');
+    }
+}
+
+async function copyStartupCommand() {
+    const command = document.getElementById('startupCommand').value;
+    if (!command) {
+        return;
+    }
+    await navigator.clipboard.writeText(command);
+    showMessage('configMessage', 'Comando copiado al portapapeles.', 'ok');
+}
+
+function appendMessage(role, content) {
+    const windowEl = document.getElementById('chatWindow');
+    const node = document.createElement('div');
+    node.className = `msg ${role}`;
+    node.textContent = content;
+    windowEl.appendChild(node);
+    windowEl.scrollTop = windowEl.scrollHeight;
+    return node;
+}
+
 async function sendChat() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
-    if (!message) return;
+    if (!message) {
+        return;
+    }
     input.value = '';
     appendMessage('user', message);
     const loading = appendMessage('ai', 'Consultando tu workspace-runtime...');
     try {
-        const response = await authFetch('/api/mcp/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message }) });
+        const response = await authFetch('/api/mcp/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
         const data = await response.json();
         loading.remove();
         appendMessage('ai', data.error ? `Error: ${data.error}` : (data.reply || 'No hubo respuesta textual.'));
-    } catch (error) { loading.remove(); appendMessage('ai', 'Error: ' + error.message); }
+    } catch (error) {
+        loading.remove();
+        appendMessage('ai', 'Error: ' + error.message);
+    }
 }
-function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); hideMessage('settingsError'); hideMessage('settingsSuccess'); document.getElementById('newGeminiKey').value = ''; }
+
+function openSettings() {
+    document.getElementById('settingsModal').classList.remove('hidden');
+    hideMessage('settingsError');
+    hideMessage('settingsSuccess');
+    document.getElementById('newGeminiKey').value = '';
+}
+
 function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+
 async function updateApiKey() {
-    hideMessage('settingsError'); hideMessage('settingsSuccess');
+    hideMessage('settingsError');
+    hideMessage('settingsSuccess');
     const newKey = document.getElementById('newGeminiKey').value.trim();
-    if (!newKey) { showMessage('settingsError', 'La clave no puede estar vacia.', 'error'); return; }
+    if (!newKey) {
+        showMessage('settingsError', 'La clave no puede estar vacia.', 'error');
+        return;
+    }
     try {
-        const response = await authFetch('/api/auth/keys', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ newGeminiKey: newKey }) });
+        const response = await authFetch('/api/auth/keys', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newGeminiKey: newKey })
+        });
         const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || 'No se pudo actualizar la clave.');
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'No se pudo actualizar la clave.');
+        }
         showMessage('settingsSuccess', 'API key actualizada. Reaplica el workspace si quieres regenerar su configuracion.', 'ok');
         setTimeout(closeSettings, 1200);
-    } catch (error) { showMessage('settingsError', error.message, 'error'); }
+    } catch (error) {
+        showMessage('settingsError', error.message, 'error');
+    }
 }
+
 window.onload = () => { checkAuth(); };
 </script>
 </body>

@@ -79,6 +79,14 @@ public class McpController {
         return workspaceRuntimeLauncherService.status(currentUserId());
     }
 
+    @GET
+    @Path("/workspace/runtime/logs")
+    @Authenticated
+    @Produces(MediaType.APPLICATION_JSON)
+    public Object runtimeLogs() {
+        return workspaceRuntimeLauncherService.readLogTail(currentUserId());
+    }
+
     @POST
     @Path("/workspace/apply")
     @Authenticated

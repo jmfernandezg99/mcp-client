@@ -75,8 +75,8 @@ public class WorkspaceProvisionService {
         builder.append("quarkus.http.port=").append(port).append('\n');
         builder.append("quarkus.langchain4j.ai.gemini.api-key=${GEMINI_API_KEY:}\n");
         builder.append("quarkus.langchain4j.ai.gemini.chat-model.model-id=${GEMINI_MODEL:gemini-2.5-flash}\n");
-        builder.append("quarkus.langchain4j.log-requests=false\n");
-        builder.append("quarkus.langchain4j.log-responses=false\n\n");
+        builder.append("quarkus.langchain4j.log-requests=true\n");
+        builder.append("quarkus.langchain4j.log-responses=true\n\n");
         builder.append(declarativeConfigService.toProperties(servers));
         return builder.toString();
     }

@@ -7,9 +7,11 @@ import org.acme.mcp.model.Workspace;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -101,6 +103,29 @@ public class WorkspaceRuntimeLauncherService {
                 "logPath", logPath,
                 "workspaceStatus", workspace.status
         );
+    }
+
+    public Map<String, Object> readLogTail(UUID userId) {
+        Workspace workspace = workspaceService.getOrCreateDefault(userId);
+        if (workspace.configPath == null || workspace.configPath.isBlank()) {
+            return Map.of("content", "", "logPath", "", "runtimeRunning", false);
+        }
+        Path logPath = Paths.get(workspace.configPath).getParent().resolve("workspace-runtime.log").toAbsolutePath();
+        if (!Files.exists(logPath)) {
+            return Map.of("content", "", "logPath", logPath.toString(), "runtimeRunning", false);
+        }
+        try {
+            List<String> lines = Files.readAllLines(logPath, StandardCharsets.UTF_8);
+            int fromIndex = Math.max(0, lines.size() - 200);
+            String content = String.join(System.lineSeparator(), lines.subList(fromIndex, lines.size()));
+            return Map.of(
+                    "content", content,
+                    "logPath", logPath.toString(),
+                    "runtimeRunning", status(userId).get("running")
+            );
+        } catch (IOException e) {
+            return Map.of("error", "No se pudo leer el log del workspace runtime: " + e.getMessage());
+        }
     }
 
     private Path repoRoot() {
